@@ -21,7 +21,7 @@ git init
 ```
 - Para vincular utilize:
 ```
-git remote add origin <URL do repositório remoto>
+git remote add origin "URL do repositório remoto"
 ```
 
 - Se for clonar o repositório utilize:
@@ -30,9 +30,9 @@ git clone "url do repositório"
 ```
 
 - Para mudar a branch:
-  ```
+```
 git branch -m master main
-  ```
+```
 
 - Para atualizar o repositório local do seu PC verifique a branch em que se econtra utilizando "git branch". Nesse caso estamos utilizando apenas a branch "main", então para atualizar o repositório, utilize:
 ```
