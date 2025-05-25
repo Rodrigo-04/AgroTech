@@ -15,7 +15,16 @@ Repositório com alguns comandos úteis para facilitar o uso do GitHub
 cd /caminho/para/o/diretorio
 ```
 
-- Para clonar o repositório utilize:
+- Se já possui o diretório inicie com:
+```
+git init
+```
+- Para vincular utilize:
+```
+git remote add origin <URL do repositório remoto>
+```
+
+- Se for clonar o repositório utilize:
 ```
 git clone "url do repositório"
 ```
