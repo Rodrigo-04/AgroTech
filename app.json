@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "scheme": "AgroTech",
+    "name": "AgroTech",
+    "slug": "AgroTech",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/img/Logo.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/img/Logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#2E5939"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/img/Logo.png",
+        "backgroundColor": "#2E5939"
+      },
+      "edgeToEdgeEnabled": true
+    },
+    "web": {
+      "favicon": "./assets/img/Logo.png"
+    },
+    "plugins": [
+      "expo-router"
+    ]
+  }
+}
