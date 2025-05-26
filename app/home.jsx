@@ -87,9 +87,6 @@ const styles = StyleSheet.create({
     bottom: '0',
     position: 'fixed'
   }, card: {
-    borderBlockColor: '#000000',
-    borderCurve: '10px',
-    borderWidth: '1px',
-    borderRadius: '10px'
+    border: '2px solid #000000',
   }
 })
