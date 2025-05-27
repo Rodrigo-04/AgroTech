@@ -1,29 +1,48 @@
-//rnefs
-import { Image, StyleSheet, View } from 'react-native'
-import React from 'react'
-import Logo from "../assets/img/Logo.svg"
-import { Link } from 'expo-router'
+import { useEffect } from 'react';
+import { View, StyleSheet, Image } from 'react-native';
+import { useRouter } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
+import Logo from '../assets/img/Logo.png';
+
+// Evita que o splash screen desapareça automaticamente
+SplashScreen.preventAutoHideAsync();
 
 const Splash = () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    const prepare = async () => {
+      // Espera 2 segundos
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      // Esconde o splash screen nativo
+      await SplashScreen.hideAsync();
+
+      // Redireciona
+      router.push('/home');
+    };
+
+    prepare();
+  }, []);
+
   return (
     <View style={styles.container}>
-        <Image source={Logo} style={styles.img} />
-        <Link href={"/home"}>Sensores</Link>
+      <Image source={Logo} style={styles.img} />
     </View>
-  )
-}
+  );
+};
 
-export default Splash
+export default Splash;
 
 const styles = StyleSheet.create({
-    container: {
+  container: {
     flex: 1,
     backgroundColor: '#2E5939',
     alignItems: 'center',
     justifyContent: 'center',
   },
   img: {
-    width: '200px',
-    height: '200px'
+    width: 200,
+    height: 200
   }
-})
+});

@@ -7,15 +7,15 @@ const Home = ({hasSensor}) => {
   hasSensor = true;
   return (
     <View style={styles.container}>
-      <div style={styles.cabecalho}>
+      <View style={styles.cabecalho}>
         <Image source={Logo} style={styles.img} />
         <Text style={styles.title}>Controle seus sensores</Text>
         <Text style={[styles.title, {color: '#000000'}]}>III</Text>
-      </div>
-      <div>
+      </View>
+      <View>
         {hasSensor ? 
-        <div>
-          <div style={styles.card}>
+        <View>
+          <View style={styles.card}>
             {/**fazer loop para carregar vários cards */}
             <Text>Sensor XXX - Milho</Text>
             <br />
@@ -27,19 +27,19 @@ const Home = ({hasSensor}) => {
             <br />
             <Text>Chance de Chuva: </Text>
             <Text> -3</Text>
-          </div>
+          </View>
           <br />
           <Link href={'/'} style={styles.link}>Voltar</Link>
-        </div>:<div>
+        </View>:<View>
           <Text>Nenhum sensor foi adicionado!</Text>
           <Link href={'/'} style={styles.link}>Voltar</Link>
-          </div>
+          </View>
         }
-      </div>
-      <div style={styles.rodape}>
+      </View>
+      <View style={styles.rodape}>
         <Text style={styles.title}>+</Text>
         <Text style={styles.title}>?</Text>
-      </div>
+      </View>
     </View>
   )
 }
