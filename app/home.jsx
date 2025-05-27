@@ -14,25 +14,29 @@ const Home = ({hasSensor}) => {
       </View>
       <View>
         {hasSensor ? 
-        <View>
+        <View style={styles.cardGroup}>
           <View style={styles.card}>
             {/**fazer loop para carregar vários cards */}
             <Text>Sensor XXX - Milho</Text>
             <br />
+            <View style={styles.texto}>
             <Text>Temperatura: </Text>
             <Text> 72°C</Text>
+            </View>
             <br />
+            <View  style={styles.texto}>
             <Text>Umidade: </Text>
             <Text> 0.5</Text>
+            </View>
             <br />
+            <View style={styles.texto}>
             <Text>Chance de Chuva: </Text>
             <Text> -3</Text>
+            </View>
           </View>
           <br />
-          <Link href={'/'} style={styles.link}>Voltar</Link>
         </View>:<View>
           <Text>Nenhum sensor foi adicionado!</Text>
-          <Link href={'/'} style={styles.link}>Voltar</Link>
           </View>
         }
       </View>
@@ -76,6 +80,10 @@ const styles = StyleSheet.create({
     fontSize: '20px',
     color: '#ffffff'
   },
+  texto: {
+    display: 'flex',
+    flexDirection: 'row'
+  },
   rodape: {
     display: 'flex',
     flexDirection: 'row',
@@ -86,7 +94,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#2E5939',
     bottom: '0',
     position: 'fixed'
-  }, card: {
-    border: '2px solid #000000',
+  },
+  cardGroup: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  card: {
+    backgroundColor: '#C0F7A2',
+    padding: 20,
+    borderRadius: 5,
+    boxShadow: '4px 4px rgba(0,0,0,0.1)',
+    margin: 20,
+    width: 300,
   }
 })
