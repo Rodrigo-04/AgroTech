@@ -1,12 +1,22 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
-import { Link } from 'expo-router'
+import { Link, useRouter } from 'expo-router'
 import Logo from '../assets/img/Logo.svg'
+import { ScrollView } from 'react-native-web'
 
 const Home = ({hasSensor}) => {
   hasSensor = true;
+
+  const router = useRouter();
+  
+  const sensores = [
+  { id: 1, nome: 'Sensor A - Milho', temperatura: 72, umidade: 0.5, chuva: -3 },
+  { id: 2, nome: 'Sensor B - Soja', temperatura: 68, umidade: 0.8, chuva: 10 },
+  { id: 3, nome: 'Sensor C - Trigo', temperatura: 74, umidade: 0.3, chuva: 5 },
+];
+
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.cabecalho}>
         <Image source={Logo} style={styles.img} />
         <Text style={styles.title}>Controle seus sensores</Text>
@@ -15,26 +25,29 @@ const Home = ({hasSensor}) => {
       <View>
         {hasSensor ? 
         <View style={styles.cardGroup}>
-          <View style={styles.card}>
-            {/**fazer loop para carregar vários cards */}
-            <Text>Sensor XXX - Milho</Text>
+        {sensores.map((sensor) => (
+        <TouchableOpacity key={sensor.id} onPress={() => router.push('/sensor')}>
+          <View style={styles.card }>
+            <Text>{sensor.nome}</Text>
             <br />
             <View style={styles.texto}>
             <Text>Temperatura: </Text>
-            <Text> 72°C</Text>
+            <Text>{sensor.temperatura}</Text>
             </View>
             <br />
             <View  style={styles.texto}>
             <Text>Umidade: </Text>
-            <Text> 0.5</Text>
+            <Text>{sensor.umidade}</Text>
             </View>
             <br />
             <View style={styles.texto}>
             <Text>Chance de Chuva: </Text>
-            <Text> -3</Text>
+            <Text>{sensor.chuva}</Text>
             </View>
           </View>
           <br />
+        </TouchableOpacity>
+        ))}
         </View>:<View>
           <Text>Nenhum sensor foi adicionado!</Text>
           </View>
@@ -44,17 +57,22 @@ const Home = ({hasSensor}) => {
         <Text style={styles.title}>+</Text>
         <Text style={styles.title}>?</Text>
       </View>
-    </View>
+    </ScrollView>
   )
 }
 
 export default Home
 
 const styles = StyleSheet.create({
-    container: {
+  body: {
+  paddingVertical: 20,
+  paddingBottom: 100, // espaço extra para não cobrir pelo rodapé fixo
+  alignItems: 'center',
+},
+  container: {
     flex: 1,
     backgroundColor: '#ECFFD4',
-    alignItems: 'center',
+    //alignItems: 'center',
     // width: '100%',
     // height: '100%'
   },
@@ -93,7 +111,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     backgroundColor: '#2E5939',
     bottom: '0',
-    position: 'fixed'
+    //position: 'fixed'
   },
   cardGroup: {
     display: 'flex',
