@@ -2,20 +2,21 @@ import { Image, StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'rea
 import React from 'react'
 import { useRouter } from 'expo-router'
 import Logo from '../assets/img/Logo.svg'
+import Wifi from '../assets/img/Wifi.svg'
 
 const Home = ({ hasSensor = true }) => {
   const router = useRouter();
 
   const sensores = [
-    { id: 1, nome: 'Sensor A', temperatura: 72, umidade: 0.5, chuva: -3 },
-    { id: 2, nome: 'Sensor B', temperatura: 68, umidade: 0.8, chuva: 10 },
-    { id: 3, nome: 'Sensor C', temperatura: 74, umidade: 0.3, chuva: 5 },
-    { id: 4, nome: 'Sensor D', temperatura: 72, umidade: 0.5, chuva: -3 },
-    { id: 5, nome: 'Sensor E', temperatura: 68, umidade: 0.8, chuva: 10 },
-    { id: 6, nome: 'Sensor F', temperatura: 74, umidade: 0.3, chuva: 5 },
-    { id: 7, nome: 'Sensor G', temperatura: 72, umidade: 0.5, chuva: -3 },
-    { id: 8, nome: 'Sensor H', temperatura: 68, umidade: 0.8, chuva: 10 },
-    { id: 9, nome: 'Sensor I', temperatura: 74, umidade: 0.3, chuva: 5 },
+    { id: 1, nome: 'Sensor A'},
+    { id: 2, nome: 'Sensor B'},
+    { id: 3, nome: 'Sensor C'},
+    { id: 4, nome: 'Sensor D'},
+    { id: 5, nome: 'Sensor E'},
+    { id: 6, nome: 'Sensor F'},
+    { id: 7, nome: 'Sensor G'},
+    { id: 8, nome: 'Sensor H'},
+    { id: 9, nome: 'Sensor I'},
   ];
 
   return (
@@ -23,44 +24,33 @@ const Home = ({ hasSensor = true }) => {
       {/* Cabeçalho */}
       <View style={styles.cabecalho}>
         <Image source={Logo} style={styles.img} />
-        <Text style={styles.title}>Controle seus sensores</Text>
+        <Text style={styles.title}>Lista sensores</Text>
         <Text style={[styles.title, { color: '#000000' }]}>III</Text>
       </View>
 
       {/* Conteúdo rolável */}
       <ScrollView style={styles.scrollContent}>
         {hasSensor ? (
-          <View style={styles.cardGroup}>
+          <View>
             {sensores.map((sensor) => (
-              <TouchableOpacity key={sensor.id} onPress={() => router.push({ pathname: '/sensor', params: { id: sensor.id, nome: sensor.nome, temperatura: sensor.temperatura, umidade: sensor.umidade, chuva: sensor.chuva } })}>
-                <View style={styles.card}>
-                  <Text>{sensor.nome}</Text>
-                  <View style={styles.texto}>
-                    <Text>Temperatura: </Text>
-                    <Text>{sensor.temperatura}</Text>
-                  </View>
-                  <View style={styles.texto}>
-                    <Text>Umidade: </Text>
-                    <Text>{sensor.umidade}</Text>
-                  </View>
-                  <View style={styles.texto}>
-                    <Text>Chance de Chuva: </Text>
-                    <Text>{sensor.chuva}</Text>
-                  </View>
+              <TouchableOpacity key={sensor.id}>
+                <View style={styles.sensor}>
+                    <Image source={Wifi} style={styles.imgSensor} />
+                    <Text>{sensor.nome}</Text>
                 </View>
               </TouchableOpacity>
             ))}
           </View>
         ) : (
           <View>
-            <Text>Nenhum sensor foi adicionado!</Text>
+            <Text>Loading...</Text>
           </View>
         )}
       </ScrollView>
 
       {/* Rodapé fixo */}
       <View style={styles.rodape}>
-        <TouchableOpacity style={styles.btn} onPress={() => router.push('/adicionar')}>
+        <TouchableOpacity style={styles.btn} onPress={() => router.push('/home')}>
           <Text style={styles.btnText}>+</Text>
         </TouchableOpacity>        
         <TouchableOpacity style={styles.btn} onPress={() => router.push('/ajuda')}>
@@ -112,22 +102,18 @@ const styles = StyleSheet.create({
     flex: 1,
     marginBottom: 50, // espaço para o rodapé
   },
-  cardGroup: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    padding: 10,
-  },
-  card: {
-    backgroundColor: '#C0F7A2',
-    padding: 20,
-    borderRadius: 5,
-    margin: 10,
-    width: 300,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 4, height: 4 },
-  },
+  sensor: {
+      display: 'flex',
+      flexDirection: 'row',
+      width: '50%',
+      marginTop: 10,
+      alignSelf: 'center',
+      justifyContent: 'space-around'
+    },
+    imgSensor: {
+      width: 30,
+      height: 30
+    },
   btn: {
     width: 30,
     height: 30,
