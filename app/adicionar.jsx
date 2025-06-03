@@ -1,8 +1,9 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native'
-import React from 'react'
+import { Image, StyleSheet, Text, TouchableOpacity, View, ScrollView, Alert } from 'react-native'
+import React, { useState } from 'react'
 import { useRouter } from 'expo-router'
 import Logo from '../assets/img/Logo.svg'
 import Wifi from '../assets/img/Wifi.svg'
+import ConfirmModal from './modal';
 
 const Home = ({ hasSensor = true }) => {
   const router = useRouter();
@@ -19,6 +20,18 @@ const Home = ({ hasSensor = true }) => {
     { id: 9, nome: 'Sensor I'},
   ];
 
+  const [modalVisible, setModalVisible] = useState(false);
+    const [modalData, setModalData] = useState({
+      title: '',
+      message: '',
+      onConfirm: () => {},
+    });
+  
+    const abrirModal = (title, message, onConfirm) => {
+      setModalData({ title, message, onConfirm });
+      setModalVisible(true);
+    };
+
   return (
     <View style={styles.container}>
       {/* Cabeçalho */}
@@ -33,7 +46,10 @@ const Home = ({ hasSensor = true }) => {
         {hasSensor ? (
           <View>
             {sensores.map((sensor) => (
-              <TouchableOpacity key={sensor.id}>
+              <TouchableOpacity key={sensor.id} onPress={() =>
+                          abrirModal('Sensor adicionado!', 'Deseja configurar este sensor agora?', () => {
+                            Alert.alert('Sensor adicionado!');
+                            setModalVisible(false);})}>
                 <View style={styles.sensor}>
                     <Image source={Wifi} style={styles.imgSensor} />
                     <Text>{sensor.nome}</Text>
@@ -48,10 +64,26 @@ const Home = ({ hasSensor = true }) => {
         )}
       </ScrollView>
 
+<ConfirmModal
+        visible={modalVisible}
+        title={modalData.title}
+        message={modalData.message}
+        onConfirm={() => {
+            modalData.onConfirm;
+            router.push('/sensor');
+        }}
+        onCancel={() => {
+            setModalVisible(false);
+            router.push('/home')
+        }}
+        confirmText={"Configurar"}
+        cancelText={"Depois"}
+      />
+
       {/* Rodapé fixo */}
       <View style={styles.rodape}>
         <TouchableOpacity style={styles.btn} onPress={() => router.push('/home')}>
-          <Text style={styles.btnText}>+</Text>
+          <Text style={styles.btnText}>Home</Text>
         </TouchableOpacity>        
         <TouchableOpacity style={styles.btn} onPress={() => router.push('/ajuda')}>
           <Text style={styles.btnText}>?</Text>

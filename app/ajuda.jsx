@@ -21,7 +21,7 @@ const Help = () => {
               <Text style={styles.btnText}>+</Text>
             </TouchableOpacity>        
             <TouchableOpacity style={styles.btn} onPress={() => router.push('/home')}>
-              <Text style={styles.btnText}>?</Text>
+              <Text style={styles.btnText}>Home</Text>
             </TouchableOpacity>
           </View>
     </View>
