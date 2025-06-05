@@ -1,31 +1,39 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View, ScrollView, Alert } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'expo-router'
 import Logo from '../assets/img/Logo.svg'
 import Wifi from '../assets/img/Wifi.svg'
 import ConfirmModal from './modal';
 
-const Home = ({ hasSensor = true }) => {
+const Home = () => {
   const router = useRouter();
 
-  const sensores = [
-    { id: 1, nome: 'Sensor A'},
-    { id: 2, nome: 'Sensor B'},
-    { id: 3, nome: 'Sensor C'},
-    { id: 4, nome: 'Sensor D'},
-    { id: 5, nome: 'Sensor E'},
-    { id: 6, nome: 'Sensor F'},
-    { id: 7, nome: 'Sensor G'},
-    { id: 8, nome: 'Sensor H'},
-    { id: 9, nome: 'Sensor I'},
-  ];
+    const [loading, setLoading] = useState(true);
+    const [sensores, setSensores] = useState([]);
 
-  const [modalVisible, setModalVisible] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
     const [modalData, setModalData] = useState({
       title: '',
       message: '',
       onConfirm: () => {},
     });
+
+    useEffect(() => {
+        setTimeout(() => {
+            setSensores([
+                { id: 1, nome: 'Sensor A' },
+                { id: 2, nome: 'Sensor B' },
+                { id: 3, nome: 'Sensor C' },
+                { id: 4, nome: 'Sensor D' },
+                { id: 5, nome: 'Sensor E' },
+                { id: 6, nome: 'Sensor F' },
+                { id: 7, nome: 'Sensor G' },
+                { id: 8, nome: 'Sensor H' },
+                { id: 9, nome: 'Sensor I' },
+            ]);
+            setLoading(false);
+        }, 2000);
+    }, []);
   
     const abrirModal = (title, message, onConfirm) => {
       setModalData({ title, message, onConfirm });
@@ -43,24 +51,29 @@ const Home = ({ hasSensor = true }) => {
 
       {/* Conteúdo rolável */}
       <ScrollView style={styles.scrollContent}>
-        {hasSensor ? (
+        {loading ? (
           <View>
-            {sensores.map((sensor) => (
-              <TouchableOpacity key={sensor.id} onPress={() =>
-                          abrirModal('Sensor adicionado!', 'Deseja configurar este sensor agora?', () => {
+            
+                <View style={styles.sensor}>
+                    <Text>Carregando sensores...</Text>
+                </View>
+            
+          </View>
+        ) : (
+            sensores.map((sensor) => (
+                <TouchableOpacity key={sensor.id} 
+                    onPress={() =>
+                    abrirModal('Sensor adicionado!', 'Deseja configurar este sensor agora?',
+                        () => {
                             Alert.alert('Sensor adicionado!');
-                            setModalVisible(false);})}>
+                            setModalVisible(false);
+                })}>
                 <View style={styles.sensor}>
                     <Image source={Wifi} style={styles.imgSensor} />
                     <Text>{sensor.nome}</Text>
                 </View>
               </TouchableOpacity>
-            ))}
-          </View>
-        ) : (
-          <View>
-            <Text>Loading...</Text>
-          </View>
+              ))
         )}
       </ScrollView>
 
