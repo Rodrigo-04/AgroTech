@@ -1,22 +1,49 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native'
-import React from 'react'
-import { useRouter } from 'expo-router'
+import React, { useEffect, useState } from 'react'
+import { useLocalSearchParams, useRouter } from 'expo-router'
 import Logo from '../assets/img/Logo.svg'
 
 const Home = ({ hasSensor = true }) => {
   const router = useRouter();
 
-  const sensores = [
+  const params = useLocalSearchParams();
+
+  // const sensores = [
+  //   { id: 1, nome: 'Sensor A', temperatura: 72, umidade: 0.5, chuva: -3 },
+  //   { id: 2, nome: 'Sensor B', temperatura: 68, umidade: 0.8, chuva: 10 },
+  //   { id: 3, nome: 'Sensor C', temperatura: 74, umidade: 0.3, chuva: 5 },
+  //   { id: 4, nome: 'Sensor D', temperatura: 72, umidade: 0.5, chuva: -3 },
+  //   { id: 5, nome: 'Sensor E', temperatura: 68, umidade: 0.8, chuva: 10 },
+  //   { id: 6, nome: 'Sensor F', temperatura: 74, umidade: 0.3, chuva: 5 },
+  //   { id: 7, nome: 'Sensor G', temperatura: 72, umidade: 0.5, chuva: -3 },
+  //   { id: 8, nome: 'Sensor H', temperatura: 68, umidade: 0.8, chuva: 10 },
+  //   { id: 9, nome: 'Sensor I', temperatura: 74, umidade: 0.3, chuva: 5 },
+  // ];
+
+  const [sensores, setSensores] = useState([
+
     { id: 1, nome: 'Sensor A', temperatura: 72, umidade: 0.5, chuva: -3 },
     { id: 2, nome: 'Sensor B', temperatura: 68, umidade: 0.8, chuva: 10 },
-    { id: 3, nome: 'Sensor C', temperatura: 74, umidade: 0.3, chuva: 5 },
-    { id: 4, nome: 'Sensor D', temperatura: 72, umidade: 0.5, chuva: -3 },
-    { id: 5, nome: 'Sensor E', temperatura: 68, umidade: 0.8, chuva: 10 },
-    { id: 6, nome: 'Sensor F', temperatura: 74, umidade: 0.3, chuva: 5 },
-    { id: 7, nome: 'Sensor G', temperatura: 72, umidade: 0.5, chuva: -3 },
-    { id: 8, nome: 'Sensor H', temperatura: 68, umidade: 0.8, chuva: 10 },
-    { id: 9, nome: 'Sensor I', temperatura: 74, umidade: 0.3, chuva: 5 },
-  ];
+  ])
+
+  useEffect(() => {
+  if (params?.id) {
+    const novoSensor = {
+      id: Number(params.id),
+      nome: params.nome,
+      temperatura: Number(params.temperatura),
+      umidade: Number(params.umidade),
+      chuva: Number(params.chuva),
+    };
+
+    setSensores((prev) => {
+      // Evita duplicados com base no ID
+      if (prev.some((s) => s.id === novoSensor.id)) return prev;
+      return [...prev, novoSensor];
+    });
+  }
+}, [params]);
+
 
   return (
     <View style={styles.container}>
