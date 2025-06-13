@@ -77,9 +77,9 @@ const Adicionar = () => {
         title={modalData.title}
         message={modalData.message}
         onConfirm={() => {
-          modalData.onConfirm(); // ✅ Executa a função
+          setModalVisible(false);
           router.push({
-            pathname: '/sensor',
+            pathname: '/home',
             params: {
               id: selectedSensor.id,
               nome: selectedSensor.nome,
@@ -91,17 +91,7 @@ const Adicionar = () => {
         }}
         onCancel={() => {
           setModalVisible(false);
-          router.push({
-          pathname: '/home',
-          params: {
-            id: selectedSensor.id,
-            nome: selectedSensor.nome,
-            temperatura: selectedSensor.temperatura,
-            umidade: selectedSensor.umidade,
-            chuva: selectedSensor.chuva,
-          },
-        });
-      }}
+        }}
         confirmText={"Configurar"}
         cancelText={"Depois"}
       />
