@@ -1,5 +1,6 @@
 # AgroTech
 
+Aplicativo desenvolvido para a aula de Laboratório de Engenharia de Software, ministrada pela professora Sandra na FATEC-SP no primeiro semestre de 2025.
 
 # 🔍 Comandos do GitBash
 Repositório com alguns comandos úteis para facilitar o uso do GitHub

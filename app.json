@@ -21,7 +21,8 @@
         "foregroundImage": "./assets/img/Logo.png",
         "backgroundColor": "#2E5939"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.anonymous.AgroTech"
     },
     "web": {
       "favicon": "./assets/img/Logo.png"
