@@ -2,6 +2,9 @@ import { Image, StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'rea
 import React from 'react'
 import { useRouter } from 'expo-router'
 import Logo from '../assets/img/Logo.svg'
+import Soma from '../assets/img/Soma.png'
+import Interrogacao from '../assets/img/Interrogacao.png'
+
 const Help = () => {
     const router = useRouter();
   return (
@@ -9,17 +12,25 @@ const Help = () => {
         <View style={styles.cabecalho}>
                 <Image source={Logo} style={styles.img} />
                 <Text style={styles.title}>Ajuda</Text>
-                <Text style={[styles.title, { color: '#000000' }]}>III</Text>
+                {/* <Text style={[styles.title, { color: '#000000' }]}>III</Text> */}
               </View>
               <ScrollView style={styles.scrollContent}>
-      <Text style={styles.texto}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc aliquet ligula vel sem fermentum, ut ullamcorper odio eleifend. Vivamus eget ipsum nec velit tempor laoreet et tincidunt lectus. Curabitur sit amet nisl sit amet risus aliquam sodales in ac mauris. Vestibulum magna urna, laoreet at feugiat ac, malesuada eget libero. Nullam in odio quis erat ultricies hendrerit in sit amet massa. Sed scelerisque ligula sem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Maecenas elementum mi eget ullamcorper feugiat. Class aptent taciti sociosqu ad litora </Text>
+      <Text style={styles.texto}>
+      Para adicionar um novo sensor clique no botão de +, irá carregar a tela com os sensores disponíveis. Ao selecionar o sensor abrirá uma notificação para confirmar ou não o sensor escolhido.
+      </Text><Text style={styles.texto}>Caso a opção de confirmação seja selecionada o sensor aparece-rá na tela inicial, se não nada irá acontecer. Ao selecionar um dos sensores na tela inicial será direcionada para a tela de configuração do sensor. 
+      {/*Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc aliquet ligula vel sem fermentum, ut ullamcorper odio eleifend. Vivamus eget ipsum nec velit tempor laoreet et tincidunt lectus. Curabitur sit amet nisl sit amet risus aliquam sodales in ac mauris. Vestibulum magna urna, laoreet at feugiat ac, malesuada eget libero. Nullam in odio quis erat ultricies hendrerit in sit amet massa. Sed scelerisque ligula sem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Maecenas elementum mi eget ullamcorper feugiat. Class aptent taciti sociosqu ad litora*/}
+      </Text>
           </ScrollView>
     
           {/* Rodapé fixo */}
           <View style={styles.rodape}>
-            <TouchableOpacity style={styles.btn} onPress={() => router.push('/adicionar')}>
+            {/* <TouchableOpacity style={styles.btn} onPress={() => router.push('/adicionar')}>
               <Text style={styles.btnText}>+</Text>
             </TouchableOpacity>        
+            <TouchableOpacity style={styles.btn} onPress={() => router.push('/home')}>
+              <Text style={styles.btnText}>Home</Text>
+            </TouchableOpacity> */}
+            <Image source={Soma} href="/adicionar"  style={{ width: 24, height: 24 }} resizeMode="contain" />
             <TouchableOpacity style={styles.btn} onPress={() => router.push('/home')}>
               <Text style={styles.btnText}>Home</Text>
             </TouchableOpacity>
@@ -80,7 +91,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 100
+    borderRadius: 100,
+    width: 100
   },
   btnText: {
     color: '#2E5939',

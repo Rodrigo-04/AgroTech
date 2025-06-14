@@ -2,6 +2,8 @@ import { Image, StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'rea
 import React, { useEffect, useState } from 'react'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import Logo from '../assets/img/Logo.svg'
+import Soma from '../assets/img/Soma.png'
+import Interrogacao from '../assets/img/Interrogacao.png'
 
 const Home = ({ hasSensor = true }) => {
   const router = useRouter();
@@ -51,7 +53,7 @@ const Home = ({ hasSensor = true }) => {
       <View style={styles.cabecalho}>
         <Image source={Logo} style={styles.img} />
         <Text style={styles.title}>Controle seus sensores</Text>
-        <Text style={[styles.title, { color: '#000000' }]}>III</Text>
+        {/* <Text style={[styles.title, { color: '#000000' }]}>III</Text> */}
       </View>
 
       {/* Conteúdo rolável */}
@@ -87,12 +89,14 @@ const Home = ({ hasSensor = true }) => {
 
       {/* Rodapé fixo */}
       <View style={styles.rodape}>
-        <TouchableOpacity style={styles.btn} onPress={() => router.push('/adicionar')}>
+        {/* <TouchableOpacity style={styles.btn} onPress={() => router.push('/adicionar')}>
           <Text style={styles.btnText}>+</Text>
         </TouchableOpacity>        
         <TouchableOpacity style={styles.btn} onPress={() => router.push('/ajuda')}>
           <Text style={styles.btnText}>?</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <Image source={Soma} href="/adicionar"  style={{ width: 24, height: 24 }} resizeMode="contain" />
+        <Image source={Interrogacao} href="/ajuda"  style={{ width: 24, height: 24 }} resizeMode="contain" />
       </View>
     </View>
   );
@@ -161,11 +165,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 100
+    borderRadius: 100,
+    width: 100
   },
   btnText: {
     color: '#2E5939',
     fontFamily: '20px',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   }
 });

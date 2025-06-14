@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Logo from '../assets/img/Logo.svg';
 import { useLocalSearchParams, Link, useRouter } from 'expo-router';
 import ConfirmModal from './modal';
+import Voltar from '../assets/img/Voltar.png'
 
 const Sensor = () => {
   const { id, nome, temperatura, umidade, chuva } = useLocalSearchParams();
@@ -27,10 +28,9 @@ const Sensor = () => {
       <View style={styles.cabecalho}>
         <Image source={Logo} style={styles.img} />
         <Text style={styles.title}>Sensores</Text>
-        <Text style={[styles.title, { color: '#000000' }]}>III</Text>
+        {/* <Text style={[styles.title, { color: '#000000' }]}>III</Text> */}
+        <Image source={Voltar} href="/home"  style={{ width: 24, height: 24 }} resizeMode="contain" />
       </View>
-
-      <Link href="/home">Voltar</Link>
 
       <ScrollView style={styles.scrollContent}>
         <View style={styles.cardGroup}>
@@ -220,6 +220,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingVertical: 10,
     alignItems: 'center',
+    width: 100
   },
   btnText: {
     color: '#2E5939',

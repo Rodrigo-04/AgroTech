@@ -4,6 +4,9 @@ import { useRouter } from 'expo-router';
 import Logo from '../assets/img/Logo.svg';
 import Wifi from '../assets/img/Wifi.svg';
 import ConfirmModal from './modal';
+import Voltar from '../assets/img/Voltar.png'
+import Soma from '../assets/img/Soma.png'
+import Interrogacao from '../assets/img/Interrogacao.png'
 
 const Adicionar = () => {
   const router = useRouter();
@@ -51,7 +54,8 @@ const Adicionar = () => {
       <View style={styles.cabecalho}>
         <Image source={Logo} style={styles.img} />
         <Text style={styles.title}>Lista sensores</Text>
-        <Text style={[styles.title, { color: '#000000' }]}>III</Text>
+        {/* <Text style={[styles.title, { color: '#000000' }]}>III</Text> */}
+        <Image source={Voltar} href="/home"  style={{ width: 24, height: 24 }} resizeMode="contain" />
       </View>
 
       {/* Conteúdo rolável */}
@@ -98,12 +102,16 @@ const Adicionar = () => {
 
       {/* Rodapé fixo */}
       <View style={styles.rodape}>
-        <TouchableOpacity style={styles.btn} onPress={() => router.push('/home')}>
+        {/* <TouchableOpacity style={styles.btn} onPress={() => router.push('/home')}>
           <Text style={styles.btnText}>Home</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.btn} onPress={() => router.push('/ajuda')}>
           <Text style={styles.btnText}>?</Text>
+        </TouchableOpacity> */}
+       <TouchableOpacity style={styles.btn} onPress={() => router.push('/home')}>
+          <Text style={styles.btnText}>Home</Text>
         </TouchableOpacity>
+        <Image source={Interrogacao} href="/ajuda"  style={{ width: 24, height: 24 }} resizeMode="contain" />
       </View>
     </View>
   );
@@ -168,6 +176,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 100,
+    width: 100
   },
   btnText: {
     color: '#2E5939',
