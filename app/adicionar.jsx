@@ -2,7 +2,7 @@ import { Image, StyleSheet, Text, TouchableOpacity, View, ScrollView, Alert } fr
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
 import Logo from '../assets/img/Logo.svg';
-import Wifi from '../assets/img/Wifi.svg';
+import Wifi from '../assets/img/Wifi2.svg';
 import ConfirmModal from './modal';
 import Voltar from '../assets/img/Voltar.png'
 import Soma from '../assets/img/Soma.png'
