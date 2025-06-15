@@ -61,8 +61,8 @@ const Help = () => {
 
       {/* Rodapé fixo */}
       <View style={styles.rodape}>
-        <TouchableOpacity onPress={() => router.push('/adicionar')}>
-          <Image source={Soma} style={{ width: 24, height: 24 }} resizeMode="contain" />
+        <TouchableOpacity style={styles.btn} onPress={() => router.push('/adicionar')}>
+          <Text style={styles.btnText}>Adicionar</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.btn} onPress={() => router.push('/home')}>
@@ -119,18 +119,18 @@ const styles = StyleSheet.create({
     flex: 1,
     marginBottom: 60,
   },
-  btn: {
+ btn: {
+    width: 30,
+    height: 30,
     backgroundColor: '#ffffff',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 100,
-    width: 100,
-    height: 30,
+    width: 100
   },
   btnText: {
     color: '#2E5939',
     fontWeight: 'bold',
-    fontSize: 16,
   },
 });
 

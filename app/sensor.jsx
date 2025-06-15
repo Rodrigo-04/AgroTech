@@ -30,24 +30,25 @@ const Sensor = () => {
 
 
   const plantas = [
-  "Abacaxi", "Abacate", "Açaí", "Aipo", "Alface",
-  "Alho", "Algodão", "Almeirão", "Amendoim", "Arroz",
-  "Aveia", "Banana", "Batata-doce", "Batata inglesa", "Berinjela",
-  "Beterraba", "Brócolis", "Cacau", "Café arábica", "Café robusta",
-  "Cana-de-açúcar", "Canola", "Cebola", "Cebolinha", "Cenoura", "Centeio", "Chuchu",
-  "Coco", "Coentro", "Couve", "Couve-flor", "Ervilha",
-  "Espinafre", "Feijão carioca", "Feijão preto", "Feijão-fradinho", "Figo",
-  "Gergelim", "Goiaba", "Grão-de-bico", "Inhame", "Jabuticaba",
-  "Jaca", "Jiló", "Kiwi", "Laranja-pera", "Laranja-lima",
-  "Lentilha", "Limão-taiti", "Limão-siciliano", "Linhaça", "Maçã fuji",
-  "Maçã gala", "Mamão papaia", "Mamão formosa", "Mandioca", "Manga tommy",
-  "Manga palmer", "Manjericão", "Maracujá", "Melancia", "Melão amarelo",
-  "Milho verde", "Milho de pipoca", "Morango", "Mostarda", "Nabo",
-  "Nectarina", "Noz-pecã", "Oregano", "Palmito pupunha", "Pepino",
-  "Pera", "Pêssego", "Pimentão verde", "Pimentão vermelho", "Pimenta-do-reino",
-  "Pimenta dedo-de-moça", "Pistache", "Quiabo", "Rabanete", "Repolho",
+  "Abacaxi", "Abacate", "Açaí", "Alface", "Alho",
+  "Algodão", "Almeirão", "Amendoim", "Arroz", "Aveia",
+  "Banana", "Batata-doce", "Batata inglesa", "Berinjela", "Beterraba",
+  "Brócolis", "Cacau", "Café arábica", "Café robusta", "Cana-de-açúcar",
+  "Cará", "Cebola", "Cebolinha", "Cenoura", "Chicória",
+  "Chuchu", "Coco-da-baía", "Coentro", "Couve", "Couve-flor",
+  "Ervilha", "Espinafre", "Feijão carioca", "Feijão preto", "Feijão-fradinho",
+  "Figo", "Gergelim", "Goiaba", "Graviola", "Guaraná",
+  "Inhame", "Jabuticaba", "Jaca", "Jiló", "Laranja-pera",
+  "Laranja-lima", "Lentilha", "Limão-taiti", "Limão-siciliano", "Linhaça",
+  "Maçã fuji", "Maçã gala", "Mamão formosa", "Mamão papaia", "Mandioca",
+  "Manga palmer", "Manga tommy", "Manjericão", "Maracujá", "Melancia",
+  "Melão amarelo", "Milho verde", "Milho de pipoca", "Morango", "Mostarda",
+  "Nabo", "Nectarina", "Noz-pecã", "Óleo de palma (dendê)", "Orégano",
+  "Palmito pupunha", "Papo-de-peru", "Pequi", "Pepino", "Pera",
+  "Pêssego", "Pimentão verde", "Pimentão vermelho", "Pimenta-do-reino", "Pimenta dedo-de-moça",
+  "Pinhão", "Pistache", "Quiabo", "Rabanete", "Repolho",
   "Rúcula", "Salsa", "Soja", "Sorgo", "Taioba",
-  "Tangerina ponkan", "Tomate italiano", "Tomate cereja", "Tomate rasteiro", "Trigo",
+  "Tangerina ponkan", "Tomate rasteiro", "Tomate italiano", "Tomate cereja", "Trigo",
   "Uva niágara", "Uva rubi", "Uva Itália", "Vagem"
 ];
 
@@ -91,7 +92,7 @@ const Sensor = () => {
           </View>
 
           {/* Card 2 - Informações */}
-          <View style={styles.card}>
+          {/* <View style={styles.card}>
             <Text style={[styles.title, { color: '#000000' }]}>Informações:</Text>
             <View style={styles.info}>
               <Text>Temperatura: </Text>
@@ -105,7 +106,7 @@ const Sensor = () => {
               <Text>Chance de chuva: </Text>
               <Text>{chuva}</Text>
             </View>
-          </View>
+          </View> */}
 
           {/* Card 3 - Controles */}
           <View style={styles.card}>
@@ -278,12 +279,13 @@ picker: {
     justifyContent: 'space-around',
     backgroundColor: '#2E5939',
   },
-  btn: {
-    width: '20%',
+ btn: {
+    width: 30,
+    height: 30,
     backgroundColor: '#ffffff',
-    borderRadius: 5,
-    paddingVertical: 10,
     alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 100,
     width: 100
   },
   btnText: {

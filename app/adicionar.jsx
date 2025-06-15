@@ -111,7 +111,9 @@ const Adicionar = () => {
        <TouchableOpacity style={styles.btn} onPress={() => router.push('/home')}>
           <Text style={styles.btnText}>Home</Text>
         </TouchableOpacity>
-        <Image source={Interrogacao} href="/ajuda"  style={{ width: 24, height: 24 }} resizeMode="contain" />
+        <TouchableOpacity style={styles.btn} onPress={() => router.push('/ajuda')}>
+                  <Text style={styles.btnText}>Ajuda</Text>
+                </TouchableOpacity>
       </View>
     </View>
   );

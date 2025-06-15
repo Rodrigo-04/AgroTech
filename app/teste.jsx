@@ -1,3 +1,8 @@
+//front precisa receber temperatura, umidade e se a bomba está ligada ou desligada
+//front precisa passar se a bomba vai ligar e desligar
+
+//SQLite
+
 import { StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import { TextInput } from 'react-native-web';
