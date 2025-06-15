@@ -60,7 +60,29 @@ Envie as alterações para o GitHub
 ```
 git push origin main
 ```
-
+- Utilizar a branch dev para o desenvolvimento
+Acessando a branch de desenvolvimento
+```
+git checkout dev
+```
+Atualizar repositório local da branch de desenvolvimento
+```
+git pull origin dev
+```
+Atualizar repositório remoto da branch de desenvolvimento (precisa fazer o add e commit normalmente)
+```
+git push origin dev
+```
+Sincronizar a dev com as mudanças da main
+```
+git checkout dev
+git merge main
+```
+Sincronizar a main com as mudanças da dev
+```
+git checkout main
+git merge dev
+```
 ----
 
 # JDO-FRONT-REACT
