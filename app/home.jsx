@@ -5,6 +5,18 @@ import Logo from '../assets/img/Logo.svg'
 import Config from '../assets/img/Configuracoes.svg'
 import Interrogacao from '../assets/img/Interrogacao.png'
 
+import { Buffer } from 'buffer';
+global.Buffer = Buffer;
+
+import { decode, encode } from 'base-64';
+global.atob = decode;
+global.btoa = encode;
+
+import { TextEncoder, TextDecoder } from 'text-encoding';
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder;
+
+
 //precisa retornar true ou false dependendo de ter sensor ou não
 const Home = ({ hasSensor = true }) => {
 
@@ -69,6 +81,10 @@ const Home = ({ hasSensor = true }) => {
                     <View style={{backgroundColor: '#ECFFD4', height:300}}>
                     </View>
                   </View>
+
+                  <TouchableOpacity onPress={() => router.push('/teste')}>
+                    <Text>Teste</Text>
+                  </TouchableOpacity>
                   
               {/* </TouchableOpacity> */}
               </View>
