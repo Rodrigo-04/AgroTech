@@ -745,8 +745,184 @@
 // });
 
 
+
+
+// import { Image, StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native';
+// import React, { useEffect, useState, useRef  } from 'react';
+// import { useRouter } from 'expo-router';
+// import Logo from '../assets/img/Logo.svg';
+// import Config from '../assets/img/Configuracoes.svg';
+// import mqtt from 'mqtt';
+
+// import { Buffer } from 'buffer';
+// import { decode, encode } from 'base-64';
+// import { TextEncoder, TextDecoder } from 'text-encoding';
+// import { getLeituras, limparBancoDeDados } from './database/database';
+
+// import { VictoryChart, VictoryLine, VictoryTheme, VictoryAxis } from 'victory';
+
+
+// global.Buffer = Buffer;
+// global.atob = decode;
+// global.btoa = encode;
+// global.TextEncoder = TextEncoder;
+// global.TextDecoder = TextDecoder;
+
+// const Home = ({ hasSensor = true }) => {
+//   const router = useRouter();
+
+//   const [nome, setNome] = useState('');
+//   const [temperatura, setTemperatura] = useState('');
+//   const [umidade, setUmidade] = useState('');
+//   const [bombaStatus, setBombaStatus] = useState('');
+//   const [dados, setDados] = useState([]);
+
+//   const [client, setClient] = useState(null);
+//   const [isConnected, setIsConnected] = useState(false);
+
+//   const jaSalvouManha = useRef(false);
+// const jaSalvouTarde = useRef(false);
+
+//   useEffect(() => {
+//     const mqttClient = mqtt.connect('wss://broker.hivemq.com:8884/mqtt');
+
+//     mqttClient.on('connect', () => {
+//       setIsConnected(true);
+//       mqttClient.subscribe('sensor/nome');
+//       mqttClient.subscribe('sensor/temperatura');
+//       mqttClient.subscribe('sensor/umidade');
+//       mqttClient.subscribe('bomba/status');
+//     });
+
+//     mqttClient.on('message', (topic, message) => {
+//       const payload = message.toString();
+
+//       if (topic === 'sensor/nome') setNome(payload);
+//       if (topic === 'sensor/temperatura') {
+//         setTemperatura(payload);
+//         const valor = parseFloat(payload);
+//         if (!isNaN(valor)) {
+//         const agora = new Date();
+//         const hora = agora.getHours();
+
+//         // Salvar apenas uma vez pela manhã
+//         if (hora < 12 && !jaSalvouManha.current) {
+//          // addTemperatura(valor);
+//           jaSalvouManha.current = true;
+//           console.log('🌅 Temperatura salva (manhã)');
+//         }
+
+//         // Salvar apenas uma vez à tarde
+//         if (hora >= 12 && !jaSalvouTarde.current) {
+//           //addTemperatura(valor);
+//           jaSalvouTarde.current = true;
+//           console.log('🌇 Temperatura salva (tarde)');
+//         }
+//       }
+//       }
+//       if (topic === 'sensor/umidade') setUmidade(payload);
+//       if (topic === 'bomba/status') setBombaStatus(payload);
+//     });
+
+//     setClient(mqttClient);
+//     return () => mqttClient.end();
+//   }, []);
+
+//   const atualizarDados = async () => {
+//   //const leituras = await getLeituras();
+//   useEffect(() => {
+//   async function carregarDados() {
+//     const dados = await getLeituras();
+//     console.log(dados);
+//   }
+//   carregarDados();
+// }, []);
+
+//   const agrupadas = leituras.reduce((acc, leitura) => {
+//     const data = leitura.data.split('T')[0];
+//     const periodo = new Date(leitura.data).getHours() < 12 ? 'Manhã' : 'Tarde';
+//     const key = `${data} ${periodo}`;
+//     acc.push({ x: key, y: leitura.valor });
+//     return acc;
+//   }, []);
+
+//   setDados(agrupadas);
+// };
+
+
+//   return (
+//     <View style={styles.container}>
+//       <ScrollView style={styles.scrollContent}>
+//         {hasSensor ? (
+//           <View>
+//             <View style={styles.cabecalho}>
+//               <Image source={Logo} style={styles.img} />
+//               <Text style={styles.title}>{nome || 'Sensor conectado'}</Text>
+//               <TouchableOpacity onPress={() => router.push('/sensor')}>
+//                 <Image source={Config} style={[styles.config, { width: 24, height: 24 }]} resizeMode="contain" />
+//               </TouchableOpacity>
+//             </View>
+// <TouchableOpacity onPress={async () => {
+//   await limparBancoDeDados();
+//   alert('Banco de dados limpo!');
+// }}>
+//   <Text>Limpar banco</Text>
+// </TouchableOpacity>
+//             <View style={styles.cardGroup}>
+//               <View style={styles.card}>
+//                 <Text style={{ fontSize: 16 }}>
+//                   <Text style={{ fontWeight: 'bold' }}>Temperatura: </Text>
+//                   {temperatura || '---'} °C
+//                 </Text>
+//                 <VictoryChart theme={VictoryTheme.material}>
+//                   <VictoryAxis fixLabelOverlap />
+//                   <VictoryAxis dependentAxis />
+//                   <VictoryLine data={dados} style={{ data: { stroke: 'tomato' } }} />
+//                 </VictoryChart>
+//               </View>
+
+//               <View style={styles.card}>
+//                 <Text style={{ fontSize: 16 }}>
+//                   <Text style={{ fontWeight: 'bold' }}>Umidade: </Text>
+//                   {umidade || '---'} %
+//                 </Text>
+//               </View>
+
+//               <View style={styles.card}>
+//                 <Text style={{ fontSize: 16 }}>
+//                   <Text style={{ fontWeight: 'bold' }}>Status da Bomba: </Text>
+//                   {bombaStatus || '---'}
+//                 </Text>
+//               </View>
+//             </View>
+//           </View>
+//         ) : (
+//           <View>
+//             <View style={styles.cabecalho}>
+//               <Image source={Logo} style={styles.img} />
+//               <Text style={styles.title}>Nenhum sensor</Text>
+//             </View>
+//             <Text style={styles.textoNullo}>Nenhum sensor foi adicionado!</Text>
+//           </View>
+//         )}
+//       </ScrollView>
+
+//       <View style={styles.rodape}>
+//         <TouchableOpacity style={styles.btn} onPress={() => router.push('/adicionar')}>
+//           <Text style={styles.btnText}>Adicionar</Text>
+//         </TouchableOpacity>
+//         <TouchableOpacity style={styles.btn} onPress={() => router.push('/ajuda')}>
+//           <Text style={styles.btnText}>Ajuda</Text>
+//         </TouchableOpacity>
+//       </View>
+//     </View>
+//   );
+// };
+
+// export default Home;
+
 import { Image, StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'expo-router';
 import Logo from '../assets/img/Logo.svg';
 import Config from '../assets/img/Configuracoes.svg';
@@ -755,7 +931,7 @@ import mqtt from 'mqtt';
 import { Buffer } from 'buffer';
 import { decode, encode } from 'base-64';
 import { TextEncoder, TextDecoder } from 'text-encoding';
-import { addTemperatura, getTemperaturas } from './database/database';
+import { addLeitura, getLeituras, limparBancoDeDados } from './database/database';
 import { VictoryChart, VictoryLine, VictoryTheme, VictoryAxis } from 'victory';
 
 global.Buffer = Buffer;
@@ -771,67 +947,155 @@ const Home = ({ hasSensor = true }) => {
   const [temperatura, setTemperatura] = useState('');
   const [umidade, setUmidade] = useState('');
   const [bombaStatus, setBombaStatus] = useState('');
-  const [dados, setDados] = useState([]);
-
+  const [dadosTemperatura, setDadosTemperatura] = useState([]);
+  const [dadosUmidade, setDadosUmidade] = useState([]);
   const [client, setClient] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
+
+  const jaSalvouManha = useRef(false);
+  const jaSalvouTarde = useRef(false);
 
   useEffect(() => {
     const mqttClient = mqtt.connect('wss://broker.hivemq.com:8884/mqtt');
 
-    mqttClient.on('connect', () => {
-      setIsConnected(true);
-      mqttClient.subscribe('sensor/nome');
-      mqttClient.subscribe('sensor/temperatura');
-      mqttClient.subscribe('sensor/umidade');
-      mqttClient.subscribe('bomba/status');
-    });
 
-    mqttClient.on('message', (topic, message) => {
+    let temp = '';
+let umi = '';
+
+mqttClient.on('message', (topic, message) => {
+  const payload = message.toString();
+
+  if (topic === 'sensor/nome') setNome(payload);
+  if (topic === 'sensor/temperatura') {
+    setTemperatura(payload);
+    temp = payload;
+  }
+  if (topic === 'sensor/umidade') {
+    setUmidade(payload);
+    umi = payload;
+  }
+  if (topic === 'bomba/status') setBombaStatus(payload);
+
+  if (temp && umi) {
+    const agora = new Date();
+    const hora = agora.getHours();
+    const periodo = hora < 12 ? 'Manhã' : 'Tarde';
+    const ref = periodo === 'Manhã' ? jaSalvouManha : jaSalvouTarde;
+
+    if (!ref.current) {
+      addLeitura({
+        idSensor: 1,
+        temperatura: parseFloat(temp),
+        umidade: parseFloat(umi),
+      });
+      ref.current = true;
+    }
+  }
+});
+
+
+    // mqttClient.on('connect', () => {
+    //   setIsConnected(true);
+    //   mqttClient.subscribe('sensor/nome');
+    //   mqttClient.subscribe('sensor/temperatura');
+    //   mqttClient.subscribe('sensor/umidade');
+    //   mqttClient.subscribe('bomba/status');
+    // });
+
+    mqttClient.on('message', async (topic, message) => {
       const payload = message.toString();
 
       if (topic === 'sensor/nome') setNome(payload);
-      if (topic === 'sensor/temperatura') {
-        setTemperatura(payload);
-        const valor = parseFloat(payload);
-        if (!isNaN(valor)) {
-          addTemperatura(valor);
-          atualizarDados(); // Atualiza o gráfico com o novo valor
-        }
-      }
-      if (topic === 'sensor/umidade') setUmidade(payload);
+if (topic === 'sensor/temperatura') {
+  setTemperatura(payload);
+}
+if (topic === 'sensor/umidade') {
+  setUmidade(payload);
+}
       if (topic === 'bomba/status') setBombaStatus(payload);
+
+      const temp = parseFloat(payload);
+      const umid = parseFloat(umidade);
+
+      if (!isNaN(temp) && !isNaN(umid)) {
+        const agora = new Date();
+        const hora = agora.getHours();
+        const periodo = hora < 12 ? 'Manhã' : 'Tarde';
+
+        if (
+  temperatura &&
+  umidade &&
+  !jaSalvouManha.current &&
+  !jaSalvouTarde.current
+) {
+  const hora = new Date().getHours();
+  const periodo = hora < 12 ? 'Manhã' : 'Tarde';
+  const ref = periodo === 'Manhã' ? jaSalvouManha : jaSalvouTarde;
+
+  if (!ref.current) {
+    addLeitura({
+      idSensor: 1,
+      temperatura: parseFloat(temperatura),
+      umidade: parseFloat(umidade),
+    });
+    ref.current = true;
+  }
+}}
     });
 
     setClient(mqttClient);
     return () => mqttClient.end();
-  }, []);
-
-  const atualizarDados = async () => {
-    const temperaturas = await getTemperaturas();
-    const dadosFormatados = temperaturas.map(t => ({
-      x: new Date(t.data).toLocaleTimeString(),
-      y: t.valor
-    }));
-    setDados(dadosFormatados);
-  };
+  }, [umidade]);
 
   useEffect(() => {
-    atualizarDados();
+    async function carregarDados() {
+      const leituras = await getLeituras();
+
+      const agrupadasTemp = leituras.map((leitura) => ({
+      x: `${leitura.data} ${leitura.periodo}`,
+      y: leitura.temperatura,
+    }));
+      const agrupadasUmid = leituras.map((leitura) => ({
+      x: `${leitura.data} ${leitura.periodo}`,
+      y: leitura.umidade,
+    }));
+
+      setDadosTemperatura(agrupadasTemp);
+    setDadosUmidade(agrupadasUmid);
+    }
+
+    carregarDados();
   }, []);
+
+
+  
+
+//   useEffect(() => {
+//   const resetar = async () => {
+//     await resetDatabase();
+//   };
+//   resetar();
+// }, []);
 
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollContent}>
         {hasSensor ? (
-          <View>
+          <>
             <View style={styles.cabecalho}>
               <Image source={Logo} style={styles.img} />
               <Text style={styles.title}>{nome || 'Sensor conectado'}</Text>
               <TouchableOpacity onPress={() => router.push('/sensor')}>
-                <Image source={Config} style={[styles.config, { width: 24, height: 24 }]} resizeMode="contain" />
-              </TouchableOpacity>
+                 <Image source={Config} style={[styles.config, { width: 24, height: 24 }]} resizeMode="contain" />
+               </TouchableOpacity>
             </View>
+
+            <TouchableOpacity onPress={async () => {
+              await limparBancoDeDados();
+              alert('Banco de dados limpo!');
+            }}>
+              <Text style={{ textAlign: 'center', margin: 10 }}>🧹 Limpar banco</Text>
+            </TouchableOpacity>
 
             <View style={styles.cardGroup}>
               <View style={styles.card}>
@@ -842,15 +1106,20 @@ const Home = ({ hasSensor = true }) => {
                 <VictoryChart theme={VictoryTheme.material}>
                   <VictoryAxis fixLabelOverlap />
                   <VictoryAxis dependentAxis />
-                  <VictoryLine data={dados} style={{ data: { stroke: 'tomato' } }} />
+                  <VictoryLine data={dadosTemperatura} style={{ data: { stroke: 'tomato' } }} />
                 </VictoryChart>
               </View>
 
               <View style={styles.card}>
-                <Text style={{ fontSize: 16 }}>
-                  <Text style={{ fontWeight: 'bold' }}>Umidade: </Text>
-                  {umidade || '---'} %
-                </Text>
+                  <Text style={{ fontSize: 16 }}>
+    <Text style={{ fontWeight: 'bold' }}>Umidade: </Text>
+    {umidade || '---'} %
+  </Text>
+  <VictoryChart theme={VictoryTheme.material}>
+    <VictoryAxis fixLabelOverlap />
+    <VictoryAxis dependentAxis />
+    <VictoryLine data={dadosUmidade} style={{ data: { stroke: 'teal' } }} />
+  </VictoryChart>
               </View>
 
               <View style={styles.card}>
@@ -860,14 +1129,10 @@ const Home = ({ hasSensor = true }) => {
                 </Text>
               </View>
             </View>
-          </View>
+          </>
         ) : (
           <View>
-            <View style={styles.cabecalho}>
-              <Image source={Logo} style={styles.img} />
-              <Text style={styles.title}>Nenhum sensor</Text>
-            </View>
-            <Text style={styles.textoNullo}>Nenhum sensor foi adicionado!</Text>
+            <Text style={styles.title}>Nenhum sensor foi adicionado</Text>
           </View>
         )}
       </ScrollView>
@@ -885,6 +1150,7 @@ const Home = ({ hasSensor = true }) => {
 };
 
 export default Home;
+
 
 const styles = StyleSheet.create({
   container: {
