@@ -63,6 +63,7 @@ const Home = ({ hasSensor = true }) => {
 
       if (ultimaTemperatura && ultimaUmidade) {
         const agora = new Date();
+        const dataFormatada = agora.toLocaleDateString('pt-BR').split('/').reverse().join('-');
         const hora = agora.getHours();
         const periodo = hora < 12 ? 'Manhã' : 'Tarde';
         const ref = periodo === 'Manhã' ? jaSalvouManha : jaSalvouTarde;
@@ -72,6 +73,8 @@ const Home = ({ hasSensor = true }) => {
             idSensor: 1,
             temperatura: parseFloat(ultimaTemperatura),
             umidade: parseFloat(ultimaUmidade),
+            data: dataFormatada,
+            periodo,
           });
           ref.current = true;
         }
