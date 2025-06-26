@@ -5,13 +5,18 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import ConfirmModal from './modal';
 import Voltar from '../assets/img/Voltar.png';
 import { Picker } from '@react-native-picker/picker'; // <-- Importando o Picker
+import { salvarSensor, getSensorById } from './database/database';
+
 
 const Sensor = () => {
-const { dados, nome } = useLocalSearchParams();
-  const leituras = JSON.parse(dados || '[]');
+const { dados, config } = useLocalSearchParams();
+
+const leituras = JSON.parse(dados || '[]');
+const sensorConfig = JSON.parse(config || '{}'); // ← Agora sim, sensorConfig existe
+
+
   const router = useRouter();
 
-  const [textNome, setTextNome] = useState(nome);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalData, setModalData] = useState({
     title: '',
@@ -19,10 +24,18 @@ const { dados, nome } = useLocalSearchParams();
     onConfirm: () => {},
   });
 
-  const [planta, setPlanta] = useState('Nenhuma');
-  const [irrigacao, setIrrigacao] = useState('Nenhuma');
-  const [intervalo, setIntervalo] = useState('Nenhum');
-  const [tempo, setTempo] = useState('Nenhum');
+// const [idSensor, setIdSensor] = useState(sensorConfig?.idSensor || 1);
+// const [textNome, setTextNome] = useState(sensorConfig?.nome || 'Sensor Conectado');
+// const [planta, setPlanta] = useState(sensorConfig?.planta || 'Escolha uma planta');
+// const [irrigacao, setIrrigacao] = useState(sensorConfig?.irrigacao || 'Nenhum');
+// const [intervalo, setIntervalo] = useState(sensorConfig?.intervalo || 'Nenhum');
+// const [tempo, setTempo] = useState(sensorConfig?.tempo || 'Nenhum');
+const [idSensor, setIdSensor] = useState(sensorConfig?.idSensor || 1); //aqui precisa vir 999 no meu teste
+const [textNome, setTextNome] = useState(sensorConfig?.nome || 'Sensor Conectado');
+const [planta, setPlanta] = useState(sensorConfig?.planta ?? '');
+const [irrigacao, setIrrigacao] = useState(sensorConfig?.irrigacao ?? 0);
+const [intervalo, setIntervalo] = useState(sensorConfig?.intervalo ?? 0);
+const [tempo, setTempo] = useState(sensorConfig?.tempo ?? 0);
 
   const abrirModal = (title, message, onConfirm) => {
     setModalData({ title, message, onConfirm });
@@ -52,7 +65,9 @@ const { dados, nome } = useLocalSearchParams();
   "Tangerina ponkan", "Tomate rasteiro", "Tomate italiano", "Tomate cereja", "Trigo",
   "Uva niágara", "Uva rubi", "Uva Itália", "Vagem"
 ];
-
+const irrigacoes = ["nenhuma", "secar", "anoitecer"];
+const intervalos = ["nenhum", "6h", "12h", "24h"];
+const tempos = ["nenhum", "30s", "1min", "2min"];
 
 
   return (
@@ -67,16 +82,14 @@ const { dados, nome } = useLocalSearchParams();
 
       <View>
         {/* Renderize os dados aqui como quiser */}
-       {leituras.map((leitura, index) => (
-        <View key={index}>
-          <Text>Nome do sensor: {nome}</Text>
-          <Text>Sensor: {leitura.nome}</Text>
-          <Text>Temperatura: {leitura.temperatura} °C</Text>
-          <Text>Umidade: {leitura.umidade} %</Text>
-          <Text>Data: {leitura.data}</Text>
-          <Text>Hora: {leitura.hora}h</Text>
-        </View>
-      ))}
+<View style={{ margin: 10, padding: 15, backgroundColor: '#fff', borderRadius: 6, elevation: 3 }}>
+  <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Sensor {idSensor}</Text>
+  <Text>Nome: {textNome}</Text>
+  <Text>Planta: {typeof planta === 'number' ? plantas[planta] : planta}</Text>
+  <Text>Irrigação: {typeof irrigacao === 'number' ? irrigacoes[irrigacao] : irrigacao}</Text>
+  <Text>Intervalo: {typeof intervalo === 'number' ? intervalos[intervalo] : intervalo}</Text>
+  <Text>Tempo: {typeof tempo === 'number' ? tempos[tempo] : tempo}</Text>
+</View>
       </View>
 
         <View style={styles.cardGroup}>
@@ -131,38 +144,40 @@ const { dados, nome } = useLocalSearchParams();
             <Text style={styles.label}>Irrigação automática:</Text>
             <Picker
               selectedValue={irrigacao}
-              onValueChange={(itemValue) => setIrrigacao(itemValue)}
+              onValueChange={(itemValue) => setIrrigacao(Number(itemValue))}
               style={styles.picker}
             >
-              <Picker.Item label="Não irrigar" value="nenhuma" />
-              <Picker.Item label="Irrigar ao secar" value="secar" />
-              <Picker.Item label="Irrigar ao anoitecer" value="anoitecer" />
+              <Picker.Item label="Selecione a irrigação" value="" />
+              {["nenhuma", "secar", "anoitecer"].map((item, index) => (
+                <Picker.Item key={index} label={item} value={index} />
+              ))}
             </Picker>
 
             <Text style={styles.label}>Intervalo de irrigação:</Text>
             <Picker
               selectedValue={intervalo}
-              onValueChange={(itemValue) => setIntervalo(itemValue)}
+              onValueChange={(itemValue) => setIntervalo(Number(itemValue))}
               style={styles.picker}
             >
-              <Picker.Item label="Nenhum" value="nenhum" />
-              <Picker.Item label="A cada 6h" value="6h" />
-              <Picker.Item label="A cada 12h" value="12h" />
-              <Picker.Item label="Diariamente" value="24h" />
+              <Picker.Item label="Selecione um intervalo" value="" />
+              {["nenhum", "6h", "12h", "24h"].map((item, index) => (
+                <Picker.Item key={index} label={item} value={index} />
+              ))}
             </Picker>
 
             <Text style={styles.label}>Tempo de irrigação:</Text>
             <Picker
               selectedValue={tempo}
-              onValueChange={(itemValue) => setTempo(itemValue)}
+              onValueChange={(itemValue) => setTempo(Number(itemValue))}
               style={styles.picker}
             >
-              <Picker.Item label="Nenhum" value="nenhum" />
-              <Picker.Item label="30 segundos" value="30s" />
-              <Picker.Item label="1 minuto" value="1min" />
-              <Picker.Item label="2 minutos" value="2min" />
+              <Picker.Item label="Selecione um tempo" value="" />
+              {["nenhum", "30s", "1min", "2min"].map((item, index) => (
+                <Picker.Item key={index} label={item} value={index} />
+              ))}
             </Picker>
-          </View>
+</View>
+
         </View>
       </ScrollView>
 
@@ -209,12 +224,19 @@ const { dados, nome } = useLocalSearchParams();
         <TouchableOpacity
           style={styles.btn}
           onPress={() =>
-            abrirModal('Salvar alterações', 'Deseja salvar as alterações feitas?', () => {
-              Alert.alert('Alterações salvas com sucesso!');
-              setModalVisible(false);
-            })
-          }
-        >
+  abrirModal('Salvar alterações', 'Deseja salvar as alterações feitas?', async () => {
+    await salvarSensor({
+      idSensor,
+      nome: textNome,
+      planta,
+      irrigacao,
+      intervalo,
+      tempo,
+    });
+    Alert.alert('Alterações salvas com sucesso!');
+    setModalVisible(false);
+  })
+}>
           <Text style={styles.btnText}>Salvar</Text>
         </TouchableOpacity>
       </View>

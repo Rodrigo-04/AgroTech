@@ -37,6 +37,7 @@ export const db = new Dexie('SensorDB');
 
 db.version(3).stores({
   leituras: '++id, idSensor, data, hora, nome, temperatura, umidade',
+  sensores: 'idSensor, nome, planta, irrigacao, intervalo, tempo',
 });
 
 
@@ -66,6 +67,9 @@ export const addLeitura = async ({ idSensor, nome, temperatura, umidade, data, h
   }
 };
 
+export const getSensorById = async (idSensor) => {
+  return await db.sensores.get(idSensor);
+};
 
 export const getLeituras = async () => {
   return await db.leituras.toArray();

@@ -7,7 +7,7 @@ import mqtt from 'mqtt';
 import { Buffer } from 'buffer';
 import { decode, encode } from 'base-64';
 import { TextEncoder, TextDecoder } from 'text-encoding';
-import { addLeitura, getLeituras, limparBancoDeDados } from './database/database';
+import { addLeitura, getLeituras, limparBancoDeDados, getSensorById  } from './database/database';
 import { VictoryChart, VictoryLine, VictoryTheme, VictoryAxis } from 'victory';
 
 global.Buffer = Buffer;
@@ -78,7 +78,7 @@ const Home = ({ hasSensor = true }) => {
         // Se ainda não salvou neste dia e hora
         if (!horasSalvas.current.has(chaveHora)) {
           await addLeitura({
-          idSensor: 1,
+          idSensor: 999,
           nome, // ← Passa o nome do sensor aqui
           temperatura: temperaturaValida,
           umidade: umidadeValida,
@@ -95,6 +95,7 @@ const Home = ({ hasSensor = true }) => {
     setClient(mqttClient);
     return () => mqttClient.end();
   }, []);
+  
 
   useEffect(() => {
     async function carregarDados() {
@@ -130,16 +131,23 @@ const Home = ({ hasSensor = true }) => {
               {/* <TouchableOpacity onPress={() => router.push('/sensor')}>
                 <Image source={Config} style={[styles.config, { width: 24, height: 24 }]} resizeMode="contain" />
               </TouchableOpacity> */}
-              <TouchableOpacity onPress={async () => {
-                const leituras = await getLeituras();
-                router.push({
-                  pathname: '/sensor',
-                  params: {
-                    dados: JSON.stringify(leituras),
-                    nome: nome  // 👈 certifique-se que nome está aqui
-                  }
-                });
-              }}>
+              <TouchableOpacity
+                onPress={async () => {
+                  const leituras = await getLeituras();
+                  const ultimaLeitura = leituras[leituras.length - 1]; // pega o idSensor mais recente
+                  const idSensor = ultimaLeitura?.idSensor || 999; // fallback
+
+                  const sensorConfig = await getSensorById(idSensor);
+
+                  router.push({
+                    pathname: '/sensor',
+                    params: {
+                      dados: JSON.stringify(leituras),
+                      config: JSON.stringify(sensorConfig),
+                    },
+                  });
+                }}
+              >
                 <Image source={Config} style={[styles.config, { width: 24, height: 24 }]} resizeMode="contain" />
               </TouchableOpacity>
             </View>
