@@ -7,7 +7,8 @@ import Voltar from '../assets/img/Voltar.png';
 import { Picker } from '@react-native-picker/picker'; // <-- Importando o Picker
 
 const Sensor = () => {
-  const { id, nome, temperatura, umidade, chuva } = useLocalSearchParams();
+const { dados, nome } = useLocalSearchParams();
+  const leituras = JSON.parse(dados || '[]');
   const router = useRouter();
 
   const [textNome, setTextNome] = useState(nome);
@@ -63,6 +64,21 @@ const Sensor = () => {
       </View>
 
       <ScrollView style={styles.scrollContent}>
+
+      <View>
+        {/* Renderize os dados aqui como quiser */}
+       {leituras.map((leitura, index) => (
+        <View key={index}>
+          <Text>Nome do sensor: {nome}</Text>
+          <Text>Sensor: {leitura.nome}</Text>
+          <Text>Temperatura: {leitura.temperatura} °C</Text>
+          <Text>Umidade: {leitura.umidade} %</Text>
+          <Text>Data: {leitura.data}</Text>
+          <Text>Hora: {leitura.hora}h</Text>
+        </View>
+      ))}
+      </View>
+
         <View style={styles.cardGroup}>
           {/* Card 1 - Sobre o sensor */}
           <View style={styles.card}>

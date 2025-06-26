@@ -30,8 +30,9 @@ const Home = ({ hasSensor = true }) => {
   const [client, setClient] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
 
-  const jaSalvouManha = useRef(false);
-  const jaSalvouTarde = useRef(false);
+  // const jaSalvouManha = useRef(false);
+  // const jaSalvouTarde = useRef(false);
+  const horasSalvas = useRef(new Set());
 
   useEffect(() => {
     const mqttClient = mqtt.connect('wss://broker.hivemq.com:8884/mqtt');
@@ -39,8 +40,8 @@ const Home = ({ hasSensor = true }) => {
     mqttClient.on('connect', () => {
       setIsConnected(true);
       mqttClient.subscribe('sensor/nome');
-      mqttClient.subscribe('sensor/temperatura');
-      mqttClient.subscribe('sensor/umidade');
+      mqttClient.subscribe('agrotech/esp32fatecSP/12345/temperature');
+      mqttClient.subscribe('agrotech/esp32fatecSP/12345/humidity');
       mqttClient.subscribe('bomba/status');
     });
 
@@ -50,33 +51,43 @@ const Home = ({ hasSensor = true }) => {
     mqttClient.on('message', async (topic, message) => {
       const payload = message.toString();
 
+      // Atualiza os dados ao receber do MQTT
       if (topic === 'sensor/nome') setNome(payload);
-      if (topic === 'sensor/temperatura') {
-        setTemperatura(payload);
+      if (topic === 'agrotech/esp32fatecSP/12345/temperature') {
+        setTemperatura(payload); // Isso vai refletir no texto da tela
         ultimaTemperatura = payload;
       }
-      if (topic === 'sensor/umidade') {
+      if (topic === 'agrotech/esp32fatecSP/12345/humidity') {
         setUmidade(payload);
         ultimaUmidade = payload;
       }
       if (topic === 'bomba/status') setBombaStatus(payload);
 
-      if (ultimaTemperatura && ultimaUmidade) {
+      // Só salva se ambos temperatura e umidade forem números válidos
+      const temperaturaValida = parseFloat(ultimaTemperatura);
+      const umidadeValida = parseFloat(ultimaUmidade);
+
+      if (!isNaN(temperaturaValida) && !isNaN(umidadeValida)) {
         const agora = new Date();
         const dataFormatada = agora.toLocaleDateString('pt-BR').split('/').reverse().join('-');
         const hora = agora.getHours();
-        const periodo = hora < 12 ? 'Manhã' : 'Tarde';
-        const ref = periodo === 'Manhã' ? jaSalvouManha : jaSalvouTarde;
+        //const periodo = hora < 12 ? 'Manhã' : 'Tarde';
+        //const ref = periodo === 'Manhã' ? jaSalvouManha : jaSalvouTarde;
+        const chaveHora = `${dataFormatada}-${hora}`;
 
-        if (!ref.current) {
+        // Se ainda não salvou neste dia e hora
+        if (!horasSalvas.current.has(chaveHora)) {
           await addLeitura({
-            idSensor: 1,
-            temperatura: parseFloat(ultimaTemperatura),
-            umidade: parseFloat(ultimaUmidade),
-            data: dataFormatada,
-            periodo,
-          });
-          ref.current = true;
+          idSensor: 1,
+          nome, // ← Passa o nome do sensor aqui
+          temperatura: temperaturaValida,
+          umidade: umidadeValida,
+          data: dataFormatada,
+          hora,
+        });
+
+          // Marca como salva essa hora
+          horasSalvas.current.add(chaveHora);
         }
       }
     });
@@ -90,12 +101,14 @@ const Home = ({ hasSensor = true }) => {
       const leituras = await getLeituras();
 
       const agrupadasTemp = leituras.map((leitura) => ({
-        x: `${leitura.data} ${leitura.periodo}`,
+        //x: `${leitura.data} ${leitura.periodo}`,
+        x: `${leitura.data} - ${leitura.hora}h`,
         y: leitura.temperatura,
       }));
 
       const agrupadasUmid = leituras.map((leitura) => ({
-        x: `${leitura.data} ${leitura.periodo}`,
+        //x: `${leitura.data} ${leitura.periodo}`,
+        x: `${leitura.data} - ${leitura.hora}h`,
         y: leitura.umidade,
       }));
 
@@ -114,7 +127,19 @@ const Home = ({ hasSensor = true }) => {
             <View style={styles.cabecalho}>
               <Image source={Logo} style={styles.img} />
               <Text style={styles.title}>{nome || 'Sensor conectado'}</Text>
-              <TouchableOpacity onPress={() => router.push('/sensor')}>
+              {/* <TouchableOpacity onPress={() => router.push('/sensor')}>
+                <Image source={Config} style={[styles.config, { width: 24, height: 24 }]} resizeMode="contain" />
+              </TouchableOpacity> */}
+              <TouchableOpacity onPress={async () => {
+                const leituras = await getLeituras();
+                router.push({
+                  pathname: '/sensor',
+                  params: {
+                    dados: JSON.stringify(leituras),
+                    nome: nome  // 👈 certifique-se que nome está aqui
+                  }
+                });
+              }}>
                 <Image source={Config} style={[styles.config, { width: 24, height: 24 }]} resizeMode="contain" />
               </TouchableOpacity>
             </View>
