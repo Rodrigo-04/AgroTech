@@ -19,7 +19,7 @@ const Splash = () => {
       await SplashScreen.hideAsync();
 
       // Redireciona
-      router.push('/home');
+      router.push('/login');
     };
 
     prepare();
