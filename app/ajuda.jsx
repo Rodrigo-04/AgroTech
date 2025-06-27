@@ -23,13 +23,13 @@ const Help = () => {
 
         <Text style={styles.texto}>
           <Text style={{ fontWeight: 'bold' }}>Tela Inicial - "Controle seus sensores":{'\n'}</Text>
-          Exibe todos os sensores adicionados. Cada cartão mostra o nome do sensor, temperatura, umidade e chance de chuva. Toque em um sensor para abrir sua tela de configurações.
+          Exibe os dados coletados pelos sensores, exibindo temperatura e umidade atuais e um gráfico das últimas horas.
         </Text>
 
-        <Text style={styles.texto}>
+        {/* <Text style={styles.texto}>
           <Text style={{ fontWeight: 'bold' }}>Adicionar novo sensor:{'\n'}</Text>
           Toque no botão "+" na parte inferior da tela. Isso abrirá a lista de sensores disponíveis. Ao selecionar um, será exibida uma notificação de confirmação. Confirmando, ele será adicionado à tela inicial.
-        </Text>
+        </Text> */}
 
         <Text style={styles.texto}>
           <Text style={{ fontWeight: 'bold' }}>Lista de Sensores:{'\n'}</Text>
@@ -43,7 +43,7 @@ const Help = () => {
 
         <Text style={styles.texto}>
           <Text style={{ fontWeight: 'bold' }}>Controles disponíveis:{'\n'}</Text>
-          - <Text style={{ fontWeight: 'bold' }}>Excluir:</Text> remove o sensor do sistema.{'\n'}
+          - <Text style={{ fontWeight: 'bold' }}>Limpar:</Text> remove configurações do sensor do sistema.{'\n'}
           - <Text style={{ fontWeight: 'bold' }}>Irrigar:</Text> aciona manualmente a irrigação.{'\n'}
           - <Text style={{ fontWeight: 'bold' }}>Salvar:</Text> aplica as alterações feitas no sensor.
         </Text>
@@ -51,7 +51,7 @@ const Help = () => {
         <Text style={styles.texto}>
           <Text style={{ fontWeight: 'bold' }}>Outros Botões:{'\n'}</Text>
           - <Text style={{ fontWeight: 'bold' }}>Home:</Text> retorna à tela principal.{'\n'}
-          - <Text style={{ fontWeight: 'bold' }}>?:</Text> exibe esta tela de ajuda.
+          - <Text style={{ fontWeight: 'bold' }}>Ajuda:</Text> exibe esta tela de ajuda.
         </Text>
 
         <Text style={styles.texto}>
@@ -61,9 +61,9 @@ const Help = () => {
 
       {/* Rodapé fixo */}
       <View style={styles.rodape}>
-        <TouchableOpacity style={styles.btn} onPress={() => router.push('/adicionar')}>
+        {/* <TouchableOpacity style={styles.btn} onPress={() => router.push('/adicionar')}>
           <Text style={styles.btnText}>Adicionar</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <TouchableOpacity style={styles.btn} onPress={() => router.push('/home')}>
           <Text style={styles.btnText}>Home</Text>
