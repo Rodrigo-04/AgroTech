@@ -207,12 +207,12 @@ const Home = ({ hasSensor = true }) => {
                 </VictoryChart>
               </View>
             </View>
-            <View style={styles.card}>
+            {/* <View style={styles.card}>
                  <Text style={{ fontSize: 16 }}>
                    <Text style={{ fontWeight: 'bold' }}>Status da Bomba: </Text>
                    {bombaStatus || '---'}
                  </Text>
-             </View>
+             </View> */}
           </>
         ) : (
           <View>
@@ -222,9 +222,9 @@ const Home = ({ hasSensor = true }) => {
       </ScrollView>
 
       <View style={styles.rodape}>
-        <TouchableOpacity style={styles.btn} onPress={() => router.push('/adicionar')}>
+        {/* <TouchableOpacity style={styles.btn} onPress={() => router.push('/adicionar')}>
           <Text style={styles.btnText}>Adicionar</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity style={styles.btn} onPress={() => router.push('/ajuda')}>
           <Text style={styles.btnText}>Ajuda</Text>
         </TouchableOpacity>
