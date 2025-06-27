@@ -1,16 +1,18 @@
 import { StyleSheet, Text, View, Image, TextInput, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Logo from '../assets/img/Logo.svg';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import ConfirmModal from './modal';
 import Voltar from '../assets/img/Voltar.png';
-import { Picker } from '@react-native-picker/picker'; // <-- Importando o Picker
+import { Picker } from '@react-native-picker/picker';
+import { salvarSensor } from './database/database';
 
 const Sensor = () => {
-  const { id, nome, temperatura, umidade, chuva } = useLocalSearchParams();
+  const { dados, config } = useLocalSearchParams();
+  const leituras = JSON.parse(dados || '[]');
+  const sensorConfig = JSON.parse(config || '{}');
   const router = useRouter();
 
-  const [textNome, setTextNome] = useState(nome);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalData, setModalData] = useState({
     title: '',
@@ -18,17 +20,15 @@ const Sensor = () => {
     onConfirm: () => {},
   });
 
-  const [planta, setPlanta] = useState('Nenhuma');
-  const [irrigacao, setIrrigacao] = useState('Nenhuma');
-  const [intervalo, setIntervalo] = useState('Nenhum');
-  const [tempo, setTempo] = useState('Nenhum');
+  const [idSensor, setIdSensor] = useState(sensorConfig?.idSensor || 1);
+  const [textNome, setTextNome] = useState(sensorConfig?.nome || 'Sensor Conectado');
+  const [planta, setPlanta] = useState(sensorConfig?.planta ?? '');
+  const [irrigacao, setIrrigacao] = useState(sensorConfig?.irrigacao ?? 0);
+  const [intervalo, setIntervalo] = useState(sensorConfig?.intervalo ?? 0);
+  const [tempo, setTempo] = useState(sensorConfig?.tempo ?? 0);
+  const [intervalosDisponiveis, setIntervalosDisponiveis] = useState([]);
 
-  const abrirModal = (title, message, onConfirm) => {
-    setModalData({ title, message, onConfirm });
-    setModalVisible(true);
-  };
-
-
+  // Listas de opções
   const plantas = [
   "Abacaxi", "Abacate", "Açaí", "Alface", "Alho",
   "Algodão", "Almeirão", "Amendoim", "Arroz", "Aveia",
@@ -52,105 +52,115 @@ const Sensor = () => {
   "Uva niágara", "Uva rubi", "Uva Itália", "Vagem"
 ];
 
+  const irrigacoes = ["nenhuma", "temperatura", "intervalo de tempo"];
+  const tempos = ["nenhum", "10s", "30s", "1min", "2min"];
 
+  // Configurações de irrigação
+  const configIrrigacao = {
+    modos: {
+      nenhuma: { intervalos: ["nenhum"] },
+      temperatura: { intervalos: ["nenhum", "maior que 14ºC", "maior que 20ºC", "maior que 27ºC"] },
+      "intervalo de tempo": { intervalos: ["nenhum", "1h", "2h", "4h", "6h", "12h", "24h"] }
+    }
+  };
+
+  // Atualiza os intervalos disponíveis quando o tipo de irrigação muda
+  useEffect(() => {
+    const tipoIrrigacao = irrigacoes[irrigacao] || "nenhuma";
+    const novosIntervalos = configIrrigacao.modos[tipoIrrigacao].intervalos;
+    setIntervalosDisponiveis(novosIntervalos);
+    
+    // Reseta o intervalo selecionado quando o tipo muda
+    setIntervalo(0);
+  }, [irrigacao]);
+
+  const abrirModal = (title, message, onConfirm) => {
+    setModalData({ title, message, onConfirm });
+    setModalVisible(true);
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.cabecalho}>
         <Image source={Logo} style={styles.img} />
-        <Text style={styles.title}>Sensores</Text>
-        <Image source={Voltar} href="/home" style={{ width: 24, height: 24 }} resizeMode="contain" />
+        <Text style={styles.title}>Configurar</Text>
+        <TouchableOpacity onPress={() => router.push('/home')}>
+          <Image source={Voltar} style={{ width: 24, height: 24 }} resizeMode="contain" />
+        </TouchableOpacity>
       </View>
 
       <ScrollView style={styles.scrollContent}>
+        {/* <View>
+          <View style={styles.sensorInfo}>
+            <Text style={styles.sensorTitle}>Sensor {idSensor}</Text>
+            <Text>Nome: {textNome}</Text>
+            <Text>Planta: {typeof planta === 'number' ? plantas[planta] : planta}</Text>
+            <Text>Irrigação: {typeof irrigacao === 'number' ? irrigacoes[irrigacao] : irrigacao}</Text>
+            <Text>Intervalo: {intervalosDisponiveis[intervalo] || 'nenhum'}</Text>
+            <Text>Tempo: {typeof tempo === 'number' ? tempos[tempo] : tempo}</Text>
+          </View>
+        </View> */}
+
         <View style={styles.cardGroup}>
-          {/* Card 1 - Sobre o sensor */}
+          
           <View style={styles.card}>
-            <Text style={[styles.title, { color: '#000000' }]}>Sobre o Sensor:</Text>
-            <View style={styles.info}>
-              <Text>Nome: </Text>
-              <TextInput
-                style={styles.input}
-                value={textNome}
-                onChangeText={setTextNome}
-                placeholder="Sem nome"
-              />
-            </View>
-            <View style={styles.info}>
-              <Text style={[styles.label, { marginRight: 8 }]}>Planta:</Text>
+            <Text style={styles.cardTitle}>Controles:</Text>
+            <View>
+              <Text style={styles.label}>Planta:</Text>
               <Picker
                 selectedValue={planta}
-                onValueChange={(itemValue) => setPlanta(itemValue)}
+                onValueChange={setPlanta}
                 style={styles.picker}
               >
-              <Picker.Item label="Selecione uma planta" value="" />
+                <Picker.Item label="Selecione uma planta" value="" />
                 {plantas.map((planta, index) => (
                   <Picker.Item key={index} label={planta} value={planta} />
                 ))}
               </Picker>
             </View>
-          </View>
-
-          {/* Card 2 - Informações */}
-          {/* <View style={styles.card}>
-            <Text style={[styles.title, { color: '#000000' }]}>Informações:</Text>
-            <View style={styles.info}>
-              <Text>Temperatura: </Text>
-              <Text>{temperatura}</Text>
+            <View>
+              <Text style={styles.label}>Tipo de Irrigação:</Text>
+              <Picker
+                selectedValue={irrigacao}
+                onValueChange={(itemValue) => setIrrigacao(Number(itemValue))}
+                style={styles.picker}
+              >
+                {irrigacoes.map((item, index) => (
+                  <Picker.Item key={index} label={item} value={index} />
+                ))}
+              </Picker>
             </View>
-            <View style={styles.info}>
-              <Text>Umidade: </Text>
-              <Text>{umidade}</Text>
+
+            <View>
+              <Text style={styles.label}>Intervalo:</Text>
+              <Picker
+                selectedValue={intervalo}
+                onValueChange={(itemValue) => setIntervalo(Number(itemValue))}
+                style={styles.picker}
+                enabled={intervalosDisponiveis.length > 0}
+              >
+                {intervalosDisponiveis.map((item, index) => (
+                  <Picker.Item key={index} label={item} value={index} />
+                ))}
+              </Picker>
             </View>
-            <View style={styles.info}>
-              <Text>Chance de chuva: </Text>
-              <Text>{chuva}</Text>
+
+            <View>
+              <Text style={styles.label}>Duração:</Text>
+              <Picker
+                selectedValue={tempo}
+                onValueChange={(itemValue) => setTempo(Number(itemValue))}
+                style={styles.picker}
+              >
+                {tempos.map((item, index) => (
+                  <Picker.Item key={index} label={item} value={index} />
+                ))}
+              </Picker>
             </View>
-          </View> */}
-
-          {/* Card 3 - Controles */}
-          <View style={styles.card}>
-            <Text style={[styles.title, { color: '#000000' }]}>Controles:</Text>
-
-            <Text style={styles.label}>Irrigação automática:</Text>
-            <Picker
-              selectedValue={irrigacao}
-              onValueChange={(itemValue) => setIrrigacao(itemValue)}
-              style={styles.picker}
-            >
-              <Picker.Item label="Não irrigar" value="nenhuma" />
-              <Picker.Item label="Irrigar ao secar" value="secar" />
-              <Picker.Item label="Irrigar ao anoitecer" value="anoitecer" />
-            </Picker>
-
-            <Text style={styles.label}>Intervalo de irrigação:</Text>
-            <Picker
-              selectedValue={intervalo}
-              onValueChange={(itemValue) => setIntervalo(itemValue)}
-              style={styles.picker}
-            >
-              <Picker.Item label="Nenhum" value="nenhum" />
-              <Picker.Item label="A cada 6h" value="6h" />
-              <Picker.Item label="A cada 12h" value="12h" />
-              <Picker.Item label="Diariamente" value="24h" />
-            </Picker>
-
-            <Text style={styles.label}>Tempo de irrigação:</Text>
-            <Picker
-              selectedValue={tempo}
-              onValueChange={(itemValue) => setTempo(itemValue)}
-              style={styles.picker}
-            >
-              <Picker.Item label="Nenhum" value="nenhum" />
-              <Picker.Item label="30 segundos" value="30s" />
-              <Picker.Item label="1 minuto" value="1min" />
-              <Picker.Item label="2 minutos" value="2min" />
-            </Picker>
           </View>
         </View>
       </ScrollView>
 
-      {/* Modal de confirmação */}
       <ConfirmModal
         visible={modalVisible}
         title={modalData.title}
@@ -164,7 +174,6 @@ const Sensor = () => {
         cancelText="Não"
       />
 
-      {/* Rodapé com ações */}
       <View style={styles.rodape}>
         <TouchableOpacity
           style={styles.btn}
@@ -193,7 +202,15 @@ const Sensor = () => {
         <TouchableOpacity
           style={styles.btn}
           onPress={() =>
-            abrirModal('Salvar alterações', 'Deseja salvar as alterações feitas?', () => {
+            abrirModal('Salvar alterações', 'Deseja salvar as alterações feitas?', async () => {
+              await salvarSensor({
+                idSensor,
+                nome: textNome,
+                planta,
+                irrigacao,
+                intervalo,
+                tempo,
+              });
               Alert.alert('Alterações salvas com sucesso!');
               setModalVisible(false);
             })
@@ -207,7 +224,7 @@ const Sensor = () => {
 };
 
 export default Sensor;
-const styles = StyleSheet.create({
+ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ECFFD4',
@@ -262,6 +279,11 @@ picker: {
     flexWrap: 'wrap',
     justifyContent: 'center',
   },
+  cardTitle: {
+    fontSize: '16px',
+    fontWeight: 'bold',
+    alignSelf: 'center'
+  },
   card: {
     backgroundColor: '#ffffff',
     borderWidth: 1,
@@ -292,7 +314,11 @@ picker: {
     color: '#2E5939',
     fontWeight: 'bold',
   },
+  label:{
+    marginTop: '20px'
+  }
 });
+
 
 
 
@@ -300,16 +326,22 @@ picker: {
 // import { StyleSheet, Text, View, Image, TextInput, ScrollView, TouchableOpacity, Alert } from 'react-native';
 // import React, { useState } from 'react';
 // import Logo from '../assets/img/Logo.svg';
-// import { useLocalSearchParams, Link, useRouter } from 'expo-router';
+// import { useLocalSearchParams, useRouter } from 'expo-router';
 // import ConfirmModal from './modal';
-// import Voltar from '../assets/img/Voltar.png'
+// import Voltar from '../assets/img/Voltar.png';
+// import { Picker } from '@react-native-picker/picker'; // <-- Importando o Picker
+// import { salvarSensor, getSensorById } from './database/database';
+
 
 // const Sensor = () => {
-//   const { id, nome, temperatura, umidade, chuva } = useLocalSearchParams();
+// const { dados, config } = useLocalSearchParams();
+
+// const leituras = JSON.parse(dados || '[]');
+// const sensorConfig = JSON.parse(config || '{}'); // ← Agora sim, sensorConfig existe
+
 
 //   const router = useRouter();
 
-//   const [textNome, setTextNome] = useState(nome);
 //   const [modalVisible, setModalVisible] = useState(false);
 //   const [modalData, setModalData] = useState({
 //     title: '',
@@ -317,47 +349,109 @@ picker: {
 //     onConfirm: () => {},
 //   });
 
+// const [idSensor, setIdSensor] = useState(sensorConfig?.idSensor || 1); //aqui precisa vir 999 no meu teste
+// const [textNome, setTextNome] = useState(sensorConfig?.nome || 'Sensor Conectado');
+// const [planta, setPlanta] = useState(sensorConfig?.planta ?? '');
+// const [irrigacao, setIrrigacao] = useState(sensorConfig?.irrigacao ?? 0);
+// const [intervalo, setIntervalo] = useState(sensorConfig?.intervalo ?? 0);
+// const [tempo, setTempo] = useState(sensorConfig?.tempo ?? 0);
+
 //   const abrirModal = (title, message, onConfirm) => {
 //     setModalData({ title, message, onConfirm });
 //     setModalVisible(true);
 //   };
+
+
+//   const plantas = [
+//   "Abacaxi", "Abacate", "Açaí", "Alface", "Alho",
+//   "Algodão", "Almeirão", "Amendoim", "Arroz", "Aveia",
+//   "Banana", "Batata-doce", "Batata inglesa", "Berinjela", "Beterraba",
+//   "Brócolis", "Cacau", "Café arábica", "Café robusta", "Cana-de-açúcar",
+//   "Cará", "Cebola", "Cebolinha", "Cenoura", "Chicória",
+//   "Chuchu", "Coco-da-baía", "Coentro", "Couve", "Couve-flor",
+//   "Ervilha", "Espinafre", "Feijão carioca", "Feijão preto", "Feijão-fradinho",
+//   "Figo", "Gergelim", "Goiaba", "Graviola", "Guaraná",
+//   "Inhame", "Jabuticaba", "Jaca", "Jiló", "Laranja-pera",
+//   "Laranja-lima", "Lentilha", "Limão-taiti", "Limão-siciliano", "Linhaça",
+//   "Maçã fuji", "Maçã gala", "Mamão formosa", "Mamão papaia", "Mandioca",
+//   "Manga palmer", "Manga tommy", "Manjericão", "Maracujá", "Melancia",
+//   "Melão amarelo", "Milho verde", "Milho de pipoca", "Morango", "Mostarda",
+//   "Nabo", "Nectarina", "Noz-pecã", "Óleo de palma (dendê)", "Orégano",
+//   "Palmito pupunha", "Papo-de-peru", "Pequi", "Pepino", "Pera",
+//   "Pêssego", "Pimentão verde", "Pimentão vermelho", "Pimenta-do-reino", "Pimenta dedo-de-moça",
+//   "Pinhão", "Pistache", "Quiabo", "Rabanete", "Repolho",
+//   "Rúcula", "Salsa", "Soja", "Sorgo", "Taioba",
+//   "Tangerina ponkan", "Tomate rasteiro", "Tomate italiano", "Tomate cereja", "Trigo",
+//   "Uva niágara", "Uva rubi", "Uva Itália", "Vagem"
+// ];
+// const irrigacoes = ["nenhuma", "temperatura", "amanhecer", "anoitecer"];
+
+// const configIrrigacao = {
+//   modos: [
+//     { id: 0, nome: "nenhuma", intervalos: ["nenhum"] },
+//     { id: 1, nome: "temperatura", intervalos: ["nenhum", "maior que 14ºC", "maior que 20ºC", "maior que 27ºC"] },
+//     { id: 2, nome: "amanhecer", intervalos: ["nenhum", "6h", "12h", "24h"] },
+//     { id: 3, nome: "anoitecer", intervalos: ["nenhum", "6h", "12h", "24h"] }
+//   ],
+//   tempos: ["nenhum", "10s", "30s", "1min", "2min"]
+// };
+
+// // Exemplo de uso:
+// const modoSelecionado = 1; // temperatura
+// const intervalosDisponiveis = configIrrigacao.modos[modoSelecionado].intervalos;
 
 //   return (
 //     <View style={styles.container}>
 //       <View style={styles.cabecalho}>
 //         <Image source={Logo} style={styles.img} />
 //         <Text style={styles.title}>Sensores</Text>
-//         {/* <Text style={[styles.title, { color: '#000000' }]}>III</Text> */}
-//         <Image source={Voltar} href="/home"  style={{ width: 24, height: 24 }} resizeMode="contain" />
+//         <Image source={Voltar} href="/home" style={{ width: 24, height: 24 }} resizeMode="contain" />
 //       </View>
 
 //       <ScrollView style={styles.scrollContent}>
+
+//       <View>
+//         {/* Renderize os dados aqui como quiser */}
+// <View style={{ margin: 10, padding: 15, backgroundColor: '#fff', borderRadius: 6, elevation: 3 }}>
+//   <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Sensor {idSensor}</Text>
+//   <Text>Nome: {textNome}</Text>
+//   <Text>Planta: {typeof planta === 'number' ? plantas[planta] : planta}</Text>
+//   <Text>Irrigação: {typeof irrigacao === 'number' ? irrigacoes[irrigacao] : irrigacao}</Text>
+//   <Text>Intervalo: {typeof intervalo === 'number' ? intervalos[intervalo] : intervalo}</Text>
+//   <Text>Tempo: {typeof tempo === 'number' ? tempos[tempo] : tempo}</Text>
+// </View>
+//       </View>
+
 //         <View style={styles.cardGroup}>
 //           {/* Card 1 - Sobre o sensor */}
 //           <View style={styles.card}>
 //             <Text style={[styles.title, { color: '#000000' }]}>Sobre o Sensor:</Text>
 //             <View style={styles.info}>
-//               <Text>Nome: </Text>
+//               {/* <Text>Nome: </Text>
 //               <TextInput
 //                 style={styles.input}
 //                 value={textNome}
 //                 onChangeText={setTextNome}
 //                 placeholder="Sem nome"
-//               />
+//               /> */}
 //             </View>
 //             <View style={styles.info}>
-//               <Text>Planta: </Text>
-//               <TextInput
-//                 style={styles.input}
-//                 value=""
-//                 onChangeText={() => {}}
-//                 placeholder="Registrar planta"
-//               />
+//               <Text style={[styles.label, { marginRight: 8 }]}>Planta:</Text>
+//               <Picker
+//                 selectedValue={planta}
+//                 onValueChange={(itemValue) => setPlanta(itemValue)}
+//                 style={styles.picker}
+//               >
+//               <Picker.Item label="Selecione uma planta" value="" />
+//                 {plantas.map((planta, index) => (
+//                   <Picker.Item key={index} label={planta} value={planta} />
+//                 ))}
+//               </Picker>
 //             </View>
 //           </View>
 
 //           {/* Card 2 - Informações */}
-//           <View style={styles.card}>
+//           {/* <View style={styles.card}>
 //             <Text style={[styles.title, { color: '#000000' }]}>Informações:</Text>
 //             <View style={styles.info}>
 //               <Text>Temperatura: </Text>
@@ -371,29 +465,53 @@ picker: {
 //               <Text>Chance de chuva: </Text>
 //               <Text>{chuva}</Text>
 //             </View>
-//           </View>
+//           </View> */}
 
 //           {/* Card 3 - Controles */}
 //           <View style={styles.card}>
 //             <Text style={[styles.title, { color: '#000000' }]}>Controles:</Text>
-//             <Text>Irrigar:</Text>
-//             <View style={styles.info}>
-//               <Text>Não irrigar: </Text>
-//               <TextInput style={styles.input} value="" onChangeText={() => {}} placeholder="Nenhuma regra" />
-//             </View>
-//             <View style={styles.info}>
-//               <Text>Intervalo de irrigação: </Text>
-//               <TextInput style={styles.input} value="" onChangeText={() => {}} placeholder="Nenhuma regra" />
-//             </View>
-//             <View style={styles.info}>
-//               <Text>Tempo de irrigação: </Text>
-//               <TextInput style={styles.input} value="" onChangeText={() => {}} placeholder="Nenhuma regra" />
-//             </View>
-//           </View>
+
+//             <Text style={styles.label}>Irrigação automática:</Text>
+//             <Picker
+//               selectedValue={irrigacao}
+//               onValueChange={(itemValue) => setIrrigacao(Number(itemValue))}
+//               style={styles.picker}
+//             >
+//               <Picker.Item label="Selecione a irrigação" value="" />
+//               {irrigacoes.map((item, index) => (
+//                 <Picker.Item key={index} label={item} value={index} />
+//               ))}
+//             </Picker>
+
+//             <Text style={styles.label}>Intervalo de irrigação:</Text>
+//             <Picker
+//               selectedValue={intervalo}
+//               onValueChange={(itemValue) => setIntervalo(Number(itemValue))}
+//               style={styles.picker}
+//             >
+//               <Picker.Item label="Selecione um intervalo" value="" />
+//               {intervalos.map((item, index) => (
+//                 <Picker.Item key={index} label={item} value={index} />
+//               ))}
+//             </Picker>
+
+//             <Text style={styles.label}>Tempo de irrigação:</Text>
+//             <Picker
+//               selectedValue={tempo}
+//               onValueChange={(itemValue) => setTempo(Number(itemValue))}
+//               style={styles.picker}
+//             >
+//               <Picker.Item label="Selecione um tempo" value="" />
+//               {tempos.map((item, index) => (
+//                 <Picker.Item key={index} label={item} value={index} />
+//               ))}
+//             </Picker>
+// </View>
+
 //         </View>
 //       </ScrollView>
 
-//       {/* Modal reutilizável */}
+//       {/* Modal de confirmação */}
 //       <ConfirmModal
 //         visible={modalVisible}
 //         title={modalData.title}
@@ -401,13 +519,13 @@ picker: {
 //         onConfirm={modalData.onConfirm}
 //         onCancel={() => {
 //           setModalVisible(false);
-//           router.push('/sensor')
+//           router.push('/sensor');
 //         }}
-//         confirmText={"Sim"}
-//         cancelText={"Não"}
+//         confirmText="Sim"
+//         cancelText="Não"
 //       />
 
-//       {/* Rodapé com botões */}
+//       {/* Rodapé com ações */}
 //       <View style={styles.rodape}>
 //         <TouchableOpacity
 //           style={styles.btn}
@@ -436,12 +554,19 @@ picker: {
 //         <TouchableOpacity
 //           style={styles.btn}
 //           onPress={() =>
-//             abrirModal('Salvar alterações', 'Deseja salvar as alterações feitas?', () => {
-//               Alert.alert('Alterações salvas com sucesso!');
-//               setModalVisible(false);
-//             })
-//           }
-//         >
+//   abrirModal('Salvar alterações', 'Deseja salvar as alterações feitas?', async () => {
+//     await salvarSensor({
+//       idSensor,
+//       nome: textNome,
+//       planta,
+//       irrigacao,
+//       intervalo,
+//       tempo,
+//     });
+//     Alert.alert('Alterações salvas com sucesso!');
+//     setModalVisible(false);
+//   })
+// }>
 //           <Text style={styles.btnText}>Salvar</Text>
 //         </TouchableOpacity>
 //       </View>
@@ -450,8 +575,6 @@ picker: {
 // };
 
 // export default Sensor;
-
-// // Estilos mantidos iguais
 // const styles = StyleSheet.create({
 //   container: {
 //     flex: 1,
@@ -487,6 +610,17 @@ picker: {
 //     marginLeft: 5,
 //     flex: 1,
 //   },
+//   pickerContainer: {
+//   flex: 1,
+//   borderWidth: 1,
+//   borderColor: '#aaa',
+//   borderRadius: 4,
+//   marginLeft: 5,
+// },
+// picker: {
+//   height: 40,
+//   width: '100%',
+// },
 //   scrollContent: {
 //     flex: 1,
 //     marginBottom: 50,
@@ -513,12 +647,13 @@ picker: {
 //     justifyContent: 'space-around',
 //     backgroundColor: '#2E5939',
 //   },
-//   btn: {
-//     width: '20%',
+//  btn: {
+//     width: 30,
+//     height: 30,
 //     backgroundColor: '#ffffff',
-//     borderRadius: 5,
-//     paddingVertical: 10,
 //     alignItems: 'center',
+//     justifyContent: 'center',
+//     borderRadius: 100,
 //     width: 100
 //   },
 //   btnText: {
@@ -526,3 +661,4 @@ picker: {
 //     fontWeight: 'bold',
 //   },
 // });
+
