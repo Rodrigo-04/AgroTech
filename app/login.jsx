@@ -29,7 +29,8 @@ const Login = () => {
     }
 
     try {
-      const userRef = ref(db, `config/${usuario}`);
+      //const userRef = ref(db, `config/${usuario}`);
+      const userRef = ref(db, `${usuario}/config`);
       const snapshot = await get(userRef);
 
       if (!snapshot.exists()) {
