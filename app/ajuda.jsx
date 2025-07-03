@@ -2,8 +2,6 @@ import { Image, StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'rea
 import React from 'react';
 import { useRouter } from 'expo-router';
 import Logo from '../assets/img/Logo.svg';
-import Soma from '../assets/img/Soma.png';
-import Interrogacao from '../assets/img/Interrogacao.png';
 
 const Help = () => {
   const router = useRouter();
@@ -25,11 +23,6 @@ const Help = () => {
           <Text style={{ fontWeight: 'bold' }}>Tela Inicial - "Controle seus sensores":{'\n'}</Text>
           Exibe os dados coletados pelos sensores, exibindo temperatura e umidade atuais e um gráfico das últimas horas.
         </Text>
-
-        {/* <Text style={styles.texto}>
-          <Text style={{ fontWeight: 'bold' }}>Adicionar novo sensor:{'\n'}</Text>
-          Toque no botão "+" na parte inferior da tela. Isso abrirá a lista de sensores disponíveis. Ao selecionar um, será exibida uma notificação de confirmação. Confirmando, ele será adicionado à tela inicial.
-        </Text> */}
 
         <Text style={styles.texto}>
           <Text style={{ fontWeight: 'bold' }}>Lista de Sensores:{'\n'}</Text>
@@ -58,13 +51,7 @@ const Help = () => {
           Em caso de problemas com sensores, verifique se o ESP32 está corretamente alimentado, conectado ao Wi-Fi e configurado para enviar os dados corretamente.
         </Text>
       </ScrollView>
-
-      {/* Rodapé fixo */}
       <View style={styles.rodape}>
-        {/* <TouchableOpacity style={styles.btn} onPress={() => router.push('/adicionar')}>
-          <Text style={styles.btnText}>Adicionar</Text>
-        </TouchableOpacity> */}
-
         <TouchableOpacity style={styles.btn} onPress={() => router.push('/home')}>
           <Text style={styles.btnText}>Home</Text>
         </TouchableOpacity>

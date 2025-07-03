@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import Logo from '../assets/img/Logo.png';
 
-// Evita que o splash screen desapareça automaticamente
+// Econtrole da splash screen
 SplashScreen.preventAutoHideAsync();
 
 const Splash = () => {
@@ -12,13 +12,8 @@ const Splash = () => {
 
   useEffect(() => {
     const prepare = async () => {
-      // Espera 2 segundos
       await new Promise(resolve => setTimeout(resolve, 2000));
-
-      // Esconde o splash screen nativo
       await SplashScreen.hideAsync();
-
-      // Redireciona
       router.push('/login');
     };
 

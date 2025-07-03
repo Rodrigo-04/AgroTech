@@ -9,7 +9,6 @@ const Login = () => {
   const router = useRouter();
   const [usuario, setUsuario] = useState('');
   const [senha, setSenha] = useState('');
-
   const [modalVisible, setModalVisible] = useState(false);
   const [modalData, setModalData] = useState({
     title: '',
@@ -28,8 +27,8 @@ const Login = () => {
       return;
     }
 
+    //busca o usuário conectado
     try {
-      //const userRef = ref(db, `config/${usuario}`);
       const userRef = ref(db, `${usuario}/config`);
       const snapshot = await get(userRef);
 
@@ -84,7 +83,6 @@ const Login = () => {
         <Text style={styles.buttonText}>Entrar</Text>
       </TouchableOpacity>
 
-      {/* Modal customizado */}
       <Modal transparent visible={modalVisible} animationType="fade">
         <View style={styles.modalOverlay}>
           <View style={styles.modalBox}>
@@ -149,7 +147,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
-  // Estilos do Modal
   modalOverlay: {
     flex: 1,
     backgroundColor: '#00000099',
